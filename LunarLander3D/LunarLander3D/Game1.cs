@@ -15,21 +15,31 @@ namespace LunarLander3D
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        VideoPlayer player;
+        Video video;
+        Texture2D videoTexture;
+        bool played;
+        enum Screens { INTRO, MENU, GAME };
+        Screens currentScreen = Screens.INTRO;
+        KeyboardState previousState;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
         }
 
         protected override void Initialize()
         {
-
+            player = new VideoPlayer();
+            spriteBatch = new SpriteBatch(this.GraphicsDevice);
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
+            video = Content.Load<Video>("video");
         }
 
         protected override void UnloadContent()
@@ -38,21 +48,51 @@ namespace LunarLander3D
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
+            switch (currentScreen)
+            {
+                case Screens.INTRO:
+                    
+                    if (player.State == MediaState.Stopped)
+                    {
+                        played = true;
+                        player.Play(video);
+                    }
+                    
+                    if (((played) && (player.State == MediaState.Stopped)) || (Keyboard.GetState().IsKeyDown(Keys.Escape))) { player.Stop(); currentScreen = Screens.MENU; }
+                    videoTexture = player.GetTexture();
+                    break;
 
+                case Screens.GAME:
+                    break;
+
+                case Screens.MENU:
+                    if (Keyboard.GetState().IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) 
+                    {
+                        currentScreen = Screens.GAME;
+                    }
+                    break;
+
+            }
+
+
+            previousState = Keyboard.GetState();
             base.Update(gameTime);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
+
+            switch (currentScreen)
+            {
+                case Screens.INTRO:
+                    spriteBatch.Draw(videoTexture, Vector2.Zero, Color.White);
+                    break;
+            }
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
