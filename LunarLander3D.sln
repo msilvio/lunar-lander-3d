@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C# Express 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LunarLander3D", "LunarLander3D\LunarLander3D\LunarLander3D.csproj", "{D23B5D67-DB90-4BC5-80AB-BF8183EC3825}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "LunarLander3DContent", "LunarLander3D\LunarLander3DContent\LunarLander3DContent.contentproj", "{9C38EB81-2D09-4828-AD6E-5023E59DBA85}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D23B5D67-DB90-4BC5-80AB-BF8183EC3825}.Debug|x86.ActiveCfg = Debug|x86
+		{D23B5D67-DB90-4BC5-80AB-BF8183EC3825}.Debug|x86.Build.0 = Debug|x86
+		{D23B5D67-DB90-4BC5-80AB-BF8183EC3825}.Release|x86.ActiveCfg = Release|x86
+		{D23B5D67-DB90-4BC5-80AB-BF8183EC3825}.Release|x86.Build.0 = Release|x86
+		{9C38EB81-2D09-4828-AD6E-5023E59DBA85}.Debug|x86.ActiveCfg = Debug|x86
+		{9C38EB81-2D09-4828-AD6E-5023E59DBA85}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
