@@ -1,0 +1,10 @@
+M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3D\bin\x86\Debug\Content\video.xnb
+M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3D\bin\x86\Debug\Content\video.wmv
+M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3D\bin\x86\Debug\LunarLander3D.exe
+M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3D\bin\x86\Debug\LunarLander3D.pdb
+M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3D\obj\x86\Debug\ResolveAssemblyReference.cache
+M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3D\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3D\obj\x86\Debug\LunarLander3D.exe
+M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3D\obj\x86\Debug\LunarLander3D.pdb
+M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3D\bin\x86\Debug\Content\Lunar3D_Show.xnb
+M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3D\bin\x86\Debug\Content\Lunar3D_Show.wmv
