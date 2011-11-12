@@ -28,6 +28,13 @@ namespace LunarLander3D
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
+            Window.Title = "Lunar Lander 3D";
+            IsMouseVisible = false;
+
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
+
+            graphics.ApplyChanges();
         }
 
         protected override void Initialize()
@@ -39,7 +46,8 @@ namespace LunarLander3D
 
         protected override void LoadContent()
         {
-            video = Content.Load<Video>("video");
+            //video = Content.Load<Video>("video");
+            video = Content.Load<Video>("Lunar3D_Show");
         }
 
         protected override void UnloadContent()
@@ -63,6 +71,7 @@ namespace LunarLander3D
                     break;
 
                 case Screens.GAME:
+                    if (Keyboard.GetState().IsKeyDown(Keys.Escape)) this.Exit();
                     break;
 
                 case Screens.MENU:

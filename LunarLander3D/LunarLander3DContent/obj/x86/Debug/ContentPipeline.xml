@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Pipeline="Microsoft.Xna.Framework.Content.Pipeline">
+  <Asset Type="Pipeline:BuildItemCollection">
+    <Item>
+      <Source>video.wmv</Source>
+      <Name>video</Name>
+      <Importer>WmvImporter</Importer>
+      <Processor>VideoProcessor</Processor>
+      <Options>None</Options>
+      <Output>M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3D\bin\x86\Debug\Content\video.xnb</Output>
+      <Extra>M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3D\bin\x86\Debug\Content\video.wmv</Extra>
+      <Time>2011-11-11T22:52:15.2406365-02:00</Time>
+    </Item>
+    <Item>
+      <Source>Lunar3D_Show.wmv</Source>
+      <Name>Lunar3D_Show</Name>
+      <Importer>WmvImporter</Importer>
+      <Processor>VideoProcessor</Processor>
+      <Options>None</Options>
+      <Output>M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3D\bin\x86\Debug\Content\Lunar3D_Show.xnb</Output>
+      <Extra>M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3D\bin\x86\Debug\Content\Lunar3D_Show.wmv</Extra>
+      <Time>2011-11-12T13:07:15.6232102-02:00</Time>
+    </Item>
+    <BuildSuccessful>true</BuildSuccessful>
+    <Settings>
+      <TargetPlatform>Windows</TargetPlatform>
+      <TargetProfile>HiDef</TargetProfile>
+      <BuildConfiguration>Debug</BuildConfiguration>
+      <CompressContent>false</CompressContent>
+      <RootDirectory>M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3DContent\</RootDirectory>
+      <LoggerRootDirectory>M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3D\</LoggerRootDirectory>
+      <IntermediateDirectory>M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3DContent\obj\x86\Debug\</IntermediateDirectory>
+      <OutputDirectory>M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3D\bin\x86\Debug\Content\</OutputDirectory>
+    </Settings>
+    <Assemblies>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.XImporter.dll</Key>
+        <Value>2010-08-23T12:41:18-03:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.VideoImporters.dll</Key>
+        <Value>2010-08-23T12:41:18-03:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.TextureImporter.dll</Key>
+        <Value>2010-08-23T12:41:18-03:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.FBXImporter.dll</Key>
+        <Value>2010-08-23T12:41:18-03:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.EffectImporter.dll</Key>
+        <Value>2010-08-23T12:41:18-03:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.AudioImporters.dll</Key>
+        <Value>2010-08-23T12:41:18-03:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Windows\Microsoft.Net\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
+        <Value>2011-02-22T21:46:11.9889594-03:00</Value>
+      </Assembly>
+    </Assemblies>
+  </Asset>
+</XnaContent>

@@ -42,8 +42,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="video.wmv">
-      <Name>video</Name>
+    <Compile Include="Lunar3D_Show.wmv">
+      <Name>Lunar3D_Show</Name>
       <Importer>WmvImporter</Importer>
       <Processor>VideoProcessor</Processor>
     </Compile>
