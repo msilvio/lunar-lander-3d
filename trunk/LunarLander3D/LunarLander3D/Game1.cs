@@ -37,11 +37,12 @@ namespace LunarLander3D
             Content.RootDirectory = "Content";
 
             Window.Title = "Lunar Lander 3D";
+
             IsMouseVisible = false;
 
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
-
+            graphics.IsFullScreen = true;
             graphics.ApplyChanges();
         }
 
@@ -59,7 +60,7 @@ namespace LunarLander3D
 
             arial = Content.Load<SpriteFont>("arial");
 
-            telaMenu = Content.Load<Texture2D>("telamenu");
+            telaMenu = Content.Load<Texture2D>("Graphics/logo_screen");
 
             models.Add(new CModel(Content.Load<Model>("ground"),
                 Vector3.Zero, Vector3.Zero, Vector3.One, GraphicsDevice));
