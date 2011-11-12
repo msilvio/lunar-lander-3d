@@ -19,11 +19,12 @@ namespace LunarLander3D
         Video video;
         Texture2D videoTexture;
         bool played;
-        enum Screens { INTRO, MENU, GAME };
+        enum Screens { INTRO, MENU, GAME, INSTRUCTION };
         Screens currentScreen = Screens.INTRO;
         KeyboardState previousState;
         SpriteFont arial;
         Texture2D telaMenu;
+        Menu menu = new Menu();
 
         List<CModel> models = new List<CModel>();
         Camera camera;
@@ -42,7 +43,7 @@ namespace LunarLander3D
 
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
-            graphics.IsFullScreen = true;
+            graphics.IsFullScreen = false;
             graphics.ApplyChanges();
         }
 
@@ -50,6 +51,7 @@ namespace LunarLander3D
         {
             player = new VideoPlayer();
             spriteBatch = new SpriteBatch(this.GraphicsDevice);
+            menu.Initialize(this.Content);
             base.Initialize();
         }
 
@@ -192,11 +194,29 @@ namespace LunarLander3D
                     break;
 
                 case Screens.MENU:
+
+                    menu.Update(Keyboard.GetState(), previousState);
+
                     if (Keyboard.GetState().IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) 
                     {
-                        currentScreen = Screens.GAME;
+                        switch (menu.Selected)
+                        {
+                            case Menu.Selection.START:
+                                currentScreen = Screens.GAME;
+                                menu.Selected = Menu.Selection.NONE;
+                                break;
+                            case Menu.Selection.EXIT:
+                                this.Exit();
+                                break;
+                            case Menu.Selection.OPTIONS:
+                                currentScreen = Screens.INSTRUCTION;
+                                menu.Selected = Menu.Selection.NONE;
+                                break;
+                            
+                        }
                     }
                     break;
+                    
 
             }
 
@@ -219,6 +239,8 @@ namespace LunarLander3D
 
                 case Screens.MENU:
                     spriteBatch.Draw(telaMenu, Vector2.Zero, Color.White);
+                    
+                     menu.Draw(spriteBatch, arial);
                     break;
 
                 case Screens.GAME:
