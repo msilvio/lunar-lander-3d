@@ -5,6 +5,9 @@ Content\Checker.xnb
 Content\projected texture.xnb
 Content\clouds.xnb
 Content\ship_tex.xnb
+Content\telamenu.xnb
+Content\Graphics\logo_screen.xnb
+Content\Graphics\arrow_right.xnb
 Content\brick_wall.xnb
 Content\PPLightMesh.xnb
 Content\ship.xnb
@@ -26,9 +29,17 @@ Content\skysphere_effect.xnb
 Content\SpotLightEffect.xnb
 Content\VSM.xnb
 Content\Ground.xnb
+Content\arial.xnb
 Content\brick_texture_map_0.xnb
 Content\ship_tex_0.xnb
 Content\Checker_0.xnb
-Content\telamenu.xnb
-Content\arial.xnb
+Content\booster3.xnb
+Content\texture_lem_flag.xnb
+Content\texture_lem_unitedstates.xnb
+Content\capsula2.xnb
+Content\BOOSTER3_0.xnb
+Content\TEXTURE_LEM_FLAG_0.xnb
+Content\TEXTURE_LEM_UNITEDSTATES_0.xnb
+Content\Lunar_menu.xnb
 Content\Lunar3D_Show.wmv
+Content\Lunar_menu.wmv

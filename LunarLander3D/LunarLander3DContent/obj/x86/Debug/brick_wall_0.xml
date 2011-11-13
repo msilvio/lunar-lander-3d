@@ -3,7 +3,7 @@
   <Asset Type="Graphics:MeshContent">
     <Name>Plane01</Name>
     <Identity>
-      <SourceFilename>M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3DContent\brick_wall.FBX</SourceFilename>
+      <SourceFilename>M:\00XNA\Lunar_13_11\LunarLander3D\LunarLander3DContent\brick_wall.FBX</SourceFilename>
       <SourceTool>FbxImporter</SourceTool>
     </Identity>
     <Transform>12.6892691 0 0 0 0 12.6892691 5.546656E-07 0 0 -5.546656E-07 12.6892691 0 0 317.23172 1.01998594E-05 1</Transform>
@@ -26,7 +26,7 @@
     <Resource ID="#Resource1" Type="Graphics:BasicMaterialContent">
       <Name>01 - Default</Name>
       <Identity>
-        <SourceFilename>M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3DContent\brick_wall.FBX</SourceFilename>
+        <SourceFilename>M:\00XNA\Lunar_13_11\LunarLander3D\LunarLander3DContent\brick_wall.FBX</SourceFilename>
         <SourceTool>FbxImporter</SourceTool>
       </Identity>
       <OpaqueData>
