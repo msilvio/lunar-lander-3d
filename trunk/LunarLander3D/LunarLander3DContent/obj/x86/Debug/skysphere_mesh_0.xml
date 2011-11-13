@@ -3,7 +3,7 @@
   <Asset Type="Graphics:MeshContent">
     <Name>Sphere01</Name>
     <Identity>
-      <SourceFilename>M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3DContent\skysphere_mesh.FBX</SourceFilename>
+      <SourceFilename>M:\00XNA\Lunar_13_11\LunarLander3D\LunarLander3DContent\skysphere_mesh.FBX</SourceFilename>
       <SourceTool>FbxImporter</SourceTool>
     </Identity>
     <Transform>2.54 0 0 0 0 7.19523466E-16 -2.54 0 0 2.54 7.19523466E-16 0 0 0 0 1</Transform>

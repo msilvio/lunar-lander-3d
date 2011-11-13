@@ -3,7 +3,7 @@
   <Asset Type="Graphics:MeshContent">
     <Name>sphere</Name>
     <Identity>
-      <SourceFilename>M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3DContent\PPLightMesh.fbx</SourceFilename>
+      <SourceFilename>M:\00XNA\Lunar_13_11\LunarLander3D\LunarLander3DContent\PPLightMesh.fbx</SourceFilename>
       <SourceTool>FbxImporter</SourceTool>
     </Identity>
     <Transform>1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</Transform>

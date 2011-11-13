@@ -16,7 +16,7 @@ namespace LunarLander3D
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         VideoPlayer player;
-        Video video;
+        Video video, video1;
         Texture2D videoTexture;
         bool played;
         enum Screens { INTRO, MENU, GAME, INSTRUCTION };
@@ -57,8 +57,10 @@ namespace LunarLander3D
 
         protected override void LoadContent()
         {
-            //video = Content.Load<Video>("video");
             video = Content.Load<Video>("Lunar3D_Show");
+            video1 = Content.Load<Video>("Lunar_menu");
+
+            player = new VideoPlayer();
 
             arial = Content.Load<SpriteFont>("arial");
 
@@ -68,7 +70,10 @@ namespace LunarLander3D
                 Vector3.Zero, Vector3.Zero, Vector3.One, GraphicsDevice));
 
             models.Add(new CModel(Content.Load<Model>("brick_wall"),
-                Vector3.Zero, new Vector3(0, 0, 0), Vector3.One, GraphicsDevice));
+                new Vector3(0, -2000,0), new Vector3(0, 0, 0), Vector3.One, GraphicsDevice));
+
+            models.Add(new CModel(Content.Load<Model>("capsula2"),
+                Vector3.Zero, new Vector3(0, 0, 0), new Vector3(50, 50, 50), GraphicsDevice));
 
             Effect lightingEffect = Content.Load<Effect>("LightingEffect");
             LightingMaterial lightingMat = new LightingMaterial();
@@ -125,7 +130,11 @@ namespace LunarLander3D
             if (keyState.IsKeyDown(Keys.S)) translation += Vector3.Backward;
             if (keyState.IsKeyDown(Keys.A)) translation += Vector3.Left;
             if (keyState.IsKeyDown(Keys.D)) translation += Vector3.Right;
-            if (keyState.IsKeyDown(Keys.Escape)) this.Exit();
+            if (keyState.IsKeyDown(Keys.Escape))
+            {
+                graphics.IsFullScreen = false;
+                this.Exit();
+            }
 
             // Move 3 units per millisecond, independent of frame rate
             translation *= 4 *
@@ -153,7 +162,44 @@ namespace LunarLander3D
                         player.Play(video);
                     }
                     
-                    if (((played) && (player.State == MediaState.Stopped)) || (Keyboard.GetState().IsKeyDown(Keys.Escape))) { player.Stop(); currentScreen = Screens.MENU; }
+                    if (((played) && (player.State == MediaState.Stopped)) || (Keyboard.GetState().IsKeyDown(Keys.Escape))) 
+                    {
+                        player.Stop();
+                        currentScreen = Screens.MENU;
+                        player.Play(video1);
+                    }
+                    videoTexture = player.GetTexture();
+                    break;
+
+                case Screens.MENU:
+
+                    menu.Update(Keyboard.GetState(), previousState);
+
+                    if (player.State == MediaState.Stopped)
+                    {
+                        played = true;
+                        player.Play(video1);
+                        videoTexture = player.GetTexture(); // retirar?
+                    }
+
+                    if (((played) && (player.State == MediaState.Stopped)) || (Keyboard.GetState().IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))))
+                    {
+                        player.Stop();
+                        switch (menu.Selected)
+                        {
+                            case Menu.Selection.START:
+                                currentScreen = Screens.GAME;
+                                menu.Selected = Menu.Selection.NONE;
+                                break;
+                            case Menu.Selection.EXIT:
+                                this.Exit();
+                                break;
+                            case Menu.Selection.OPTIONS:
+                                currentScreen = Screens.INSTRUCTION;
+                                menu.Selected = Menu.Selection.NONE;
+                                break;
+                        }
+                    }
                     videoTexture = player.GetTexture();
                     break;
 
@@ -193,33 +239,14 @@ namespace LunarLander3D
                     lastMouseState = mouseState;
                     break;
 
-                case Screens.MENU:
-
-                    menu.Update(Keyboard.GetState(), previousState);
-
-                    if (Keyboard.GetState().IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) 
+                case Screens.INSTRUCTION:
+                    if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                     {
-                        switch (menu.Selected)
-                        {
-                            case Menu.Selection.START:
-                                currentScreen = Screens.GAME;
-                                menu.Selected = Menu.Selection.NONE;
-                                break;
-                            case Menu.Selection.EXIT:
-                                this.Exit();
-                                break;
-                            case Menu.Selection.OPTIONS:
-                                currentScreen = Screens.INSTRUCTION;
-                                menu.Selected = Menu.Selection.NONE;
-                                break;
-                            
-                        }
+                        currentScreen = Screens.MENU;
+                        menu.Selected = Menu.Selection.NONE;
                     }
                     break;
-                    
-
             }
-
 
             previousState = Keyboard.GetState();
             base.Update(gameTime);
@@ -238,9 +265,9 @@ namespace LunarLander3D
                     break;
 
                 case Screens.MENU:
-                    spriteBatch.Draw(telaMenu, Vector2.Zero, Color.White);
-                    
-                     menu.Draw(spriteBatch, arial);
+                    //spriteBatch.Draw(telaMenu, Vector2.Zero, Color.White);
+                    spriteBatch.Draw(videoTexture, Vector2.Zero, Color.White);
+                    menu.Draw(spriteBatch, arial);
                     break;
 
                 case Screens.GAME:
@@ -252,6 +279,10 @@ namespace LunarLander3D
 
                     break;
 
+                case Screens.INSTRUCTION:
+                    spriteBatch.Draw(telaMenu, Vector2.Zero, Color.White);
+                     
+                    break;
             }
 
             spriteBatch.End();

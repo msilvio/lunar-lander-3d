@@ -3,7 +3,7 @@
   <Asset Type="Graphics:MeshContent">
     <Name>Teapot01</Name>
     <Identity>
-      <SourceFilename>M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3DContent\teapot.fbx</SourceFilename>
+      <SourceFilename>M:\00XNA\Lunar_13_11\LunarLander3D\LunarLander3DContent\teapot.fbx</SourceFilename>
       <SourceTool>FbxImporter</SourceTool>
     </Identity>
     <Transform>7.62 0 0 0 0 4.66590428E-16 -7.62 0 0 7.62 4.66590428E-16 0 0 0 0 1</Transform>
@@ -26,7 +26,7 @@
     <Resource ID="#Resource1" Type="Graphics:BasicMaterialContent">
       <Name>01 - Default</Name>
       <Identity>
-        <SourceFilename>M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3DContent\teapot.fbx</SourceFilename>
+        <SourceFilename>M:\00XNA\Lunar_13_11\LunarLander3D\LunarLander3DContent\teapot.fbx</SourceFilename>
         <SourceTool>FbxImporter</SourceTool>
       </Identity>
       <OpaqueData>
