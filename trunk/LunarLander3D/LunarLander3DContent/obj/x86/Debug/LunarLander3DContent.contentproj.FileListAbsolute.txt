@@ -1,2 +1,0 @@
-M:\00XNA\Lunar_11_11\LunarLander3D\LunarLander3DContent\obj\x86\Debug\ResolveAssemblyReference.cache
-M:\00XNA\Lunar_13_11\LunarLander3D\LunarLander3DContent\obj\x86\Debug\ResolveAssemblyReference.cache
