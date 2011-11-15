@@ -475,7 +475,9 @@ namespace LunarLander3D
                         "Lunar controls:" + 
                         "\nKeys A & D Rotation Y" +
                         "\nKeys W & S Rotation X" +
-                        "\nSpacebar = Trust" +
+                        "\nKey Z = Return to base" +
+                        "\nKey X = Trust" +
+                        "\nSpacebar = Trust forward" +
                         "\nEscape = Return to Menu or" +
                         "\n                   Exit in Game",
                         new Vector2(100, 300),
