@@ -84,8 +84,9 @@ namespace LunarLander3D
             Effect normalMapEffect = Content.Load<Effect>("NormalMapEffect");
             NormalMapMaterial normalMat = new NormalMapMaterial(
                 Content.Load<Texture2D>("brick_normal_map"));
-
-            lightingMat.LightDirection = new Vector3(.5f, .5f, 1);
+            
+            //lightingMat.LightDirection = new Vector3(.5f, .5f, 1); // posição anterior da luz
+            lightingMat.LightDirection = new Vector3(-1.5f, .8f, 1);
             lightingMat.LightColor = Vector3.One;
 
             normalMat.LightDirection = new Vector3(.5f, .5f, 1);
