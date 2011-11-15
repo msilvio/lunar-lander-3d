@@ -36,11 +36,12 @@ namespace LunarLander3D
         List<CModel> models = new List<CModel>();
 
         Terrain terrain;
-        Camera camera;
+        Camera camera, cameraTop;
         SkySphere sky;
 
         // Posição inicial da camera  - 0, 600, 1500  // 8000, 6000, 8000 // 0, 400, 1200
         Vector3 cameraPos = new Vector3(100, 450, 1200);
+        Vector3 cameraPosTop = new Vector3(0, 1450, 0);
 
         PrelightingRenderer renderer;
 
@@ -126,8 +127,13 @@ namespace LunarLander3D
             //    GraphicsDevice);
 
             // Antes do Shadow
-            camera = new ChaseCamera(cameraPos, new Vector3(0, 200, 0),
+            camera = new ChaseCamera(cameraPos, new Vector3(0, 200, 0), // 0, 200, 0
                 new Vector3(0, 0, 0), GraphicsDevice);
+
+            cameraTop = new ChaseCameraRadar(cameraPosTop, new Vector3(0, 0, 0), 
+                new Vector3(0, 0, 0), GraphicsDevice);
+
+            
 
             //camera = new FreeCamera(new Vector3(0, 3200, -700),
             //    MathHelper.ToRadians(0),
@@ -195,9 +201,11 @@ namespace LunarLander3D
 
             // Move the camera to the new model's position and orientation
             ((ChaseCamera)camera).Move(models[index].Position, models[index].Rotation);
+            ((ChaseCameraRadar)cameraTop).Move(models[index].Position, models[index].Rotation);
 
             // Update the camera
             camera.Update();
+            cameraTop.Update();
 
             // Update the mouse state
             lastMouseState = mouseState;
@@ -435,8 +443,10 @@ namespace LunarLander3D
                     //sky.Draw(camera.View, camera.Projection, ((FreeCamera)camera).Position);
                     // adiconar nova camera
                     sky.Draw(camera.View, camera.Projection, ((ChaseCamera)camera).Position);
+                    //sky.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position);
 
                     terrain.Draw(camera.View, camera.Projection);
+                    //terrain.Draw(cameraTop.View, cameraTop.Projection); // teste1
 
                     spriteBatch.DrawString(arial,
                             "Model Position " + models[index].Position +
@@ -446,11 +456,17 @@ namespace LunarLander3D
                             Color.Yellow);
 
                     foreach (CModel model in models)
+                    {
                         if (camera.BoundingVolumeIsInView(model.BoundingSphere))
-                            //model.Draw(camera.View, camera.Projection, ((FreeCamera)camera).Position);
-                            //nova camera
-                            model.Draw(camera.View, camera.Projection, ((ChaseCamera)camera).Position);
-
+                        { 
+                            model.Draw(camera.View, camera.Projection, ((ChaseCamera)camera).Position); 
+                        }
+                        //if (cameraTop.BoundingVolumeIsInView(model.BoundingSphere))
+                        //{
+                        //    model.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position);
+                        //}
+                        
+                    }
                     break;
 
                 case Screens.INSTRUCTION:
