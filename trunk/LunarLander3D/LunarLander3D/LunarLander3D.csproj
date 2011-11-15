@@ -109,7 +109,9 @@
   <ItemGroup>
     <Compile Include="Cameras\ArcBallCamera.cs" />
     <Compile Include="Cameras\Camera.cs" />
+    <Compile Include="Cameras\CameraRadar.cs" />
     <Compile Include="Cameras\ChaseCamera.cs" />
+    <Compile Include="Cameras\ChaseCameraRadar.cs" />
     <Compile Include="Cameras\FreeCamera.cs" />
     <Compile Include="CModel.cs" />
     <Compile Include="Lander.cs" />
