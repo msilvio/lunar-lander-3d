@@ -109,6 +109,9 @@ namespace LunarLander3D
             sky = new SkySphere(Content, GraphicsDevice,
                 Content.Load<TextureCube>("clouds"));
 
+            //sky = new SkySphere(Content, GraphicsDevice,
+            //    Content.Load<TextureCube>("test"));
+
             lastMouseState = Mouse.GetState();
 
         }
