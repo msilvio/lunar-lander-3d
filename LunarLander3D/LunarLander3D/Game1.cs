@@ -29,6 +29,7 @@ namespace LunarLander3D
         List<CModel> models = new List<CModel>();
         Camera camera;
         SkySphere sky;
+        int cont = 0;
 
         MouseState lastMouseState;
 
@@ -59,7 +60,6 @@ namespace LunarLander3D
         {
             video = Content.Load<Video>("Lunar3D_Show");
             video1 = Content.Load<Video>("Lunar_menu");
-
             player = new VideoPlayer();
 
             arial = Content.Load<SpriteFont>("arial");
@@ -177,6 +177,49 @@ namespace LunarLander3D
             if (keyState.IsKeyDown(Keys.D))
                 rotChange += new Vector3(0, -1, 0);
 
+            // Posiciona a Capsula no centro do cenário posição Zero
+            if (keyState.IsKeyDown(Keys.Z))
+            {
+                rotChange = new Vector3(0, 0, 0);
+                models[2].Rotation = rotChange;
+                models[2].Position = Vector3.Zero;
+            }
+
+            // Move no eixo Y para subir
+            if (keyState.IsKeyDown(Keys.X))
+            {
+                models[2].Position += new Vector3(0, 1, 0) *
+                    (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
+            }
+
+            // Move no eixo Z para avançar
+            if (keyState.IsKeyDown(Keys.Up))
+            {
+                models[2].Position += new Vector3(0, 0, -1) *
+                    (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
+            }
+
+            // Move no eixo Z para recuar
+            if (keyState.IsKeyDown(Keys.Down))
+            {
+                models[2].Position += new Vector3(0, 0, 1) *
+                    (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
+            }
+
+            // Move no eixo X para direita
+            if (keyState.IsKeyDown(Keys.Right))
+            {
+                models[2].Position += new Vector3(1, 0, 0) *
+                    (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
+            }
+
+            // Move no eixo X para esquerda
+            if (keyState.IsKeyDown(Keys.Left))
+            {
+                models[2].Position += new Vector3(-1, 0, 0) *
+                    (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
+            }
+
             models[2].Rotation += rotChange * .025f;
 
             // If space isn't down, the ship shouldn't move
@@ -201,13 +244,25 @@ namespace LunarLander3D
                     if (player.State == MediaState.Stopped)
                     {
                         played = true;
+                        cont++;
+                        player.IsLooped = false;
                         player.Play(video);
                     }
-                    
-                    if (((played) && (player.State == MediaState.Stopped)) || (Keyboard.GetState().IsKeyDown(Keys.Escape))) 
+
+                    if (cont > 1)
                     {
                         player.Stop();
                         currentScreen = Screens.MENU;
+                        player.IsLooped = true;
+                        player.Play(video1);
+                    }
+                    
+                    if (((played) && (player.State == MediaState.Stopped)) || 
+                        (Keyboard.GetState().IsKeyDown(Keys.Escape))) 
+                    {
+                        player.Stop();
+                        currentScreen = Screens.MENU;
+                        player.IsLooped = true;
                         player.Play(video1);
                     }
                     videoTexture = player.GetTexture();
@@ -224,7 +279,8 @@ namespace LunarLander3D
                         videoTexture = player.GetTexture(); 
                     }
 
-                    if (((played) && (player.State == MediaState.Stopped)) || (Keyboard.GetState().IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))))
+                    if (((played) && (player.State == MediaState.Stopped)) || 
+                        (Keyboard.GetState().IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))))
                     {
                         player.Stop();
                         switch (menu.Selected)
