@@ -127,6 +127,7 @@
     <Compile Include="Game1.cs" />
     <Compile Include="SkySphere.cs" />
     <Compile Include="TargetCamera.cs" />
+    <Compile Include="Terrain.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

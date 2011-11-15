@@ -15,21 +15,32 @@ namespace LunarLander3D
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+
         VideoPlayer player;
         Video video, video1;
         Texture2D videoTexture;
         bool played;
+
         enum Screens { INTRO, MENU, GAME, INSTRUCTION };
         Screens currentScreen = Screens.INTRO;
         KeyboardState previousState;
+
         SpriteFont arial;
         Texture2D telaMenu;
         Menu menu = new Menu();
-        int modelScale = 30;
+
+        // Lunar Pod
+        int modelScale = 20;
+        int index, cont = 0;
+        Vector3 LanderDown = new Vector3(500, 1550, -1000); // 500, 2350, -1000
         List<CModel> models = new List<CModel>();
+
+        Terrain terrain;
         Camera camera;
         SkySphere sky;
-        int cont = 0;
+
+        // Posição inicial da camera  - 0, 600, 1500  // 8000, 6000, 8000 // 0, 400, 1200
+        Vector3 cameraPos = new Vector3(100, 450, 1200);
 
         MouseState lastMouseState;
 
@@ -67,14 +78,20 @@ namespace LunarLander3D
             telaMenu = Content.Load<Texture2D>("Graphics/logo_screen");
 
             models.Add(new CModel(Content.Load<Model>("ground"),
-                Vector3.Zero, Vector3.Zero, Vector3.One, GraphicsDevice));
+                new Vector3(0, -2000, 0), Vector3.Zero, new Vector3(1, 1, 1), GraphicsDevice));
+
+            // 30, 4800 - 30, 9600 - 30, 3200 - 30, 256 (terrains 4 e 5)
+            terrain = new Terrain(Content.Load<Texture2D>("Graphics/terrain3"), 30, 3200,
+                Content.Load<Texture2D>("Graphics/terrain3"), 6, new Vector3(1, -1, 0), // 6
+                GraphicsDevice, Content);
 
             models.Add(new CModel(Content.Load<Model>("brick_wall"),
                 new Vector3(0, -2000,0), new Vector3(0, 0, 0), Vector3.One, GraphicsDevice));
 
-            // Capsula Lunar 2 posição no Array
+            // Capsula Lunar 2 posição no Array - colocar o index correto - index = 2
+            index = 2;
             models.Add(new CModel(Content.Load<Model>("capsula2"),
-                Vector3.Zero, new Vector3(0, 0, 0), 
+                LanderDown, Vector3.Zero, 
                 new Vector3(modelScale, modelScale, modelScale), 
                 GraphicsDevice));
 
@@ -104,7 +121,8 @@ namespace LunarLander3D
             //    MathHelper.ToRadians(0),
             //    GraphicsDevice);
 
-            camera = new ChaseCamera(new Vector3(0, 600, 1500), new Vector3(0, 200, 0),
+            // 
+            camera = new ChaseCamera(cameraPos, new Vector3(0, 200, 0),
                 new Vector3(0, 0, 0), GraphicsDevice);
 
             sky = new SkySphere(Content, GraphicsDevice,
@@ -155,7 +173,7 @@ namespace LunarLander3D
             //((FreeCamera)camera).Move(translation);
 
             // Move the camera to the new model's position and orientation
-            ((ChaseCamera)camera).Move(models[2].Position, models[2].Rotation);
+            ((ChaseCamera)camera).Move(models[index].Position, models[index].Rotation);
 
             // Update the camera
             camera.Update();
@@ -185,46 +203,46 @@ namespace LunarLander3D
             if (keyState.IsKeyDown(Keys.Z))
             {
                 rotChange = new Vector3(0, 0, 0);
-                models[2].Rotation = rotChange;
-                models[2].Position = Vector3.Zero;
+                models[index].Rotation = rotChange;
+                models[index].Position = LanderDown;
             }
 
             // Move no eixo Y para subir
             if (keyState.IsKeyDown(Keys.X))
             {
-                models[2].Position += new Vector3(0, 1, 0) *
+                models[index].Position += new Vector3(0, 1, 0) *
                     (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
             }
 
             // Move no eixo Z para avançar
             if (keyState.IsKeyDown(Keys.Up))
             {
-                models[2].Position += new Vector3(0, 0, -1) *
+                models[index].Position += new Vector3(0, 0, -1) *
                     (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
             }
 
             // Move no eixo Z para recuar
             if (keyState.IsKeyDown(Keys.Down))
             {
-                models[2].Position += new Vector3(0, 0, 1) *
+                models[index].Position += new Vector3(0, 0, 1) *
                     (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
             }
 
             // Move no eixo X para direita
             if (keyState.IsKeyDown(Keys.Right))
             {
-                models[2].Position += new Vector3(1, 0, 0) *
+                models[index].Position += new Vector3(1, 0, 0) *
                     (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
             }
 
             // Move no eixo X para esquerda
             if (keyState.IsKeyDown(Keys.Left))
             {
-                models[2].Position += new Vector3(-1, 0, 0) *
+                models[index].Position += new Vector3(-1, 0, 0) *
                     (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
             }
 
-            models[2].Rotation += rotChange * .025f;
+            models[index].Rotation += rotChange * .025f;
 
             // If space isn't down, the ship shouldn't move
             if (!keyState.IsKeyDown(Keys.Space))
@@ -232,10 +250,10 @@ namespace LunarLander3D
 
             // Determine what direction to move in
             Matrix rotation = Matrix.CreateFromYawPitchRoll(
-                models[2].Rotation.Y, models[2].Rotation.X, models[2].Rotation.Z);
+                models[index].Rotation.Y, models[index].Rotation.X, models[index].Rotation.Z);
 
             // Move in the direction dictated by our rotation matrix
-            models[2].Position += Vector3.Transform(Vector3.Forward, rotation)
+            models[index].Position += Vector3.Transform(Vector3.Forward, rotation)
                 * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
         }
 
@@ -397,9 +415,11 @@ namespace LunarLander3D
                     // adiconar nova camera
                     sky.Draw(camera.View, camera.Projection, ((ChaseCamera)camera).Position);
 
+                    terrain.Draw(camera.View, camera.Projection);
+
                     spriteBatch.DrawString(arial,
-                            "Model Position " + models[2].Position +
-                            "\nModel Rotation: " + models[2].Rotation +
+                            "Model Position " + models[index].Position +
+                            "\nModel Rotation: " + models[index].Rotation +
                             "\nEsc = Exit",
                             Vector2.Zero,
                             Color.Yellow);
