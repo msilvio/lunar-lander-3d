@@ -42,6 +42,8 @@ namespace LunarLander3D
         // Posição inicial da camera  - 0, 600, 1500  // 8000, 6000, 8000 // 0, 400, 1200
         Vector3 cameraPos = new Vector3(100, 450, 1200);
 
+        PrelightingRenderer renderer;
+
         MouseState lastMouseState;
 
         public Game1()
@@ -106,6 +108,8 @@ namespace LunarLander3D
             lightingMat.LightDirection = new Vector3(-1.5f, .8f, 1);
             lightingMat.LightColor = Vector3.One;
 
+            Effect effect = Content.Load<Effect>("VSM");
+
             normalMat.LightDirection = new Vector3(.5f, .5f, 1);
             normalMat.LightColor = Vector3.One;
 
@@ -121,12 +125,29 @@ namespace LunarLander3D
             //    MathHelper.ToRadians(0),
             //    GraphicsDevice);
 
-            // 
+            // Antes do Shadow
             camera = new ChaseCamera(cameraPos, new Vector3(0, 200, 0),
                 new Vector3(0, 0, 0), GraphicsDevice);
 
+            //camera = new FreeCamera(new Vector3(0, 3200, -700),
+            //    MathHelper.ToRadians(0),
+            //    MathHelper.ToRadians(-90),
+            //    GraphicsDevice);
+
             sky = new SkySphere(Content, GraphicsDevice,
                 Content.Load<TextureCube>("clouds"));
+
+            renderer = new PrelightingRenderer(GraphicsDevice, Content);
+            renderer.Models = models;
+            renderer.Camera = camera;
+            renderer.Lights = new List<PPPointLight>() {
+                new PPPointLight(new Vector3(0, 1000, -1000), Color.White * .85f, 20000),
+                new PPPointLight(new Vector3(0, 1000, 1000), Color.White * .85f, 20000),
+            };
+            renderer.ShadowLightPosition = new Vector3(1500, 1500, 2000);
+            renderer.ShadowLightTarget = new Vector3(0, 150, 0);
+            renderer.DoShadowMapping = true;
+            renderer.ShadowMult = 0.3f;
 
             //sky = new SkySphere(Content, GraphicsDevice,
             //    Content.Load<TextureCube>("test"));
