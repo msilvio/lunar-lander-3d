@@ -282,7 +282,15 @@ namespace LunarLander3D
             //Physics Update
             shuttleSpeed += gravity * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
 
+            if (models[index].Position.Y <= 1550)
+            {
+                models[index].Position = new Vector3(models[index].Position.X, 1550, models[index].Position.Z);
+                shuttleSpeed = 0f;
+            }
+
             models[index].Position += new Vector3(0, shuttleSpeed, 0) * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
+
+            
 
 
             // If space isn't down, the ship shouldn't move
