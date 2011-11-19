@@ -15,7 +15,6 @@ namespace LunarLander3D
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
         float combustivel = 4000;
 
         VideoPlayer player;
@@ -51,6 +50,26 @@ namespace LunarLander3D
         PrelightingRenderer renderer;
 
         MouseState lastMouseState;
+
+        /// <summary>
+        /// viewport padrao, deve mostrar a cena toda por trás do módulo lunar...
+        /// </summary>
+        Viewport defaultViewport;
+
+        /// <summary>
+        /// viewport do mapa, deve mostrar a cena toda por cima do módulo lunar...
+        /// </summary>
+        Viewport mapViewport;
+        
+        /// <summary>
+        /// projeção da viewport padrao
+        /// </summary>
+        Matrix projectionMatrix;
+
+        /// <summary>
+        /// projeção da viewport do mapa
+        /// </summary>
+        Matrix mapProjectionMatrix;
 
         public Game1()
         {
@@ -160,7 +179,23 @@ namespace LunarLander3D
             renderer.DoShadowMapping = true;
             renderer.ShadowMult = 0.3f;
 
+            defaultViewport = GraphicsDevice.Viewport;
+            mapViewport.Width = defaultViewport.Width / 2;
+            mapViewport.Height = defaultViewport.Height / 2;
+            mapViewport.X = 0;
+            mapViewport.Y = 0;
 
+            projectionMatrix = Matrix.CreatePerspectiveFieldOfView(
+        MathHelper.PiOver4, 
+        16.0f / 9.0f,
+        1.0f,
+        10000f);
+        
+            mapProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(
+                MathHelper.PiOver4,
+                2.0f / 2.0f,
+                1.0f,
+                10000f);
 
             //sky = new SkySphere(Content, GraphicsDevice,
             //    Content.Load<TextureCube>("test"));
@@ -471,13 +506,39 @@ namespace LunarLander3D
 
                 case Screens.GAME:
                     //sky.Draw(camera.View, camera.Projection, ((FreeCamera)camera).Position);
-                    // adiconar nova camera
+                    // adicionar nova camera
+
+                    GraphicsDevice.Viewport = defaultViewport;
+    
                     sky.Draw(camera.View, camera.Projection, ((ChaseCamera)camera).Position);
-                    //sky.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position);
-
                     terrain.Draw(camera.View, camera.Projection);
-                    //terrain.Draw(cameraTop.View, cameraTop.Projection); // teste1
+                    
+                    spriteBatch.DrawString(arial,
+                            "Model Position " + models[index].Position +
+                            "\nModel Rotation: " + models[index].Rotation +
+                            "\nEsc = Exit",
+                            Vector2.Zero,
+                            Color.Yellow);
 
+                    foreach (CModel model in models)
+                    {
+                        if (camera.BoundingVolumeIsInView(model.BoundingSphere))
+                        { 
+                            model.Draw(camera.View, camera.Projection, ((ChaseCamera)camera).Position); 
+                        }
+                        //if (cameraTop.BoundingVolumeIsInView(model.BoundingSphere))
+                        //{
+                        //    model.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position);
+                        //}
+                        
+                    }
+
+                    GraphicsDevice.Viewport = mapViewport;
+
+                    
+                    sky.Draw(camera.View, camera.Projection, ((ChaseCamera)camera).Position);
+                    terrain.Draw(camera.View, camera.Projection);
+                    
                     spriteBatch.DrawString(arial,
                             "Model Position " + models[index].Position +
                             "\nModel Rotation: " + models[index].Rotation +
@@ -499,6 +560,11 @@ namespace LunarLander3D
                         //}
                         
                     }
+                    /*******view port*************/
+                    
+                    //sky.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position);
+                    //terrain.Draw(cameraTop.View, cameraTop.Projection); // teste1
+
                     break;
 
                 case Screens.INSTRUCTION:
