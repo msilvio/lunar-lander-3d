@@ -31,7 +31,7 @@ namespace LunarLander3D
         Menu menu = new Menu();
 
         // Lunar Pod
-        int modelScale = 20;
+        int modelScale = 50;
         int index, cont = 0;
         Vector3 LanderDown = new Vector3(500, 4550, -1000); // 500, 2350, -1000
         float gravity = -0.00003f;
@@ -117,7 +117,7 @@ namespace LunarLander3D
 
             // Capsula Lunar 2 posição no Array - colocar o index correto - index = 2
             index = 2;
-            models.Add(new CModel(Content.Load<Model>("capsula2"),
+            models.Add(new CModel(Content.Load<Model>("modulo1"),
                 LanderDown, Vector3.Zero, 
                 new Vector3(modelScale, modelScale, modelScale), 
                 GraphicsDevice));
@@ -144,25 +144,12 @@ namespace LunarLander3D
             models[0].Material = lightingMat;
             models[1].Material = normalMat;
 
-            //Camera antiga
-            //camera = new FreeCamera(new Vector3(0, 400, 1400),
-            //    MathHelper.ToRadians(0),
-            //    MathHelper.ToRadians(0),
-            //    GraphicsDevice);
-
             // Antes do Shadow
             camera = new ChaseCamera(cameraPos, new Vector3(0, 200, 0), // 0, 200, 0
                 new Vector3(0, 0, 0), GraphicsDevice);
 
             cameraTop = new ChaseCameraRadar(cameraPosTop, new Vector3(0, 0, 0), 
                 new Vector3(0, 0, 0), GraphicsDevice);
-
-            
-
-            //camera = new FreeCamera(new Vector3(0, 3200, -700),
-            //    MathHelper.ToRadians(0),
-            //    MathHelper.ToRadians(-90),
-            //    GraphicsDevice);
 
             sky = new SkySphere(Content, GraphicsDevice,
                 Content.Load<TextureCube>("clouds"));
@@ -180,10 +167,10 @@ namespace LunarLander3D
             renderer.ShadowMult = 0.3f;
 
             defaultViewport = GraphicsDevice.Viewport;
-            mapViewport.Width = defaultViewport.Width / 2;
-            mapViewport.Height = defaultViewport.Height / 2;
-            mapViewport.X = 0;
-            mapViewport.Y = 0;
+            mapViewport.Width = defaultViewport.Width / 4;
+            mapViewport.Height = defaultViewport.Height / 4;
+            mapViewport.X = 950;
+            mapViewport.Y = 10;
 
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(
         MathHelper.PiOver4, 
@@ -223,11 +210,6 @@ namespace LunarLander3D
 
             Vector3 translation = Vector3.Zero;
 
-            // Determine in which direction to move the camera
-            //if (keyState.IsKeyDown(Keys.W)) translation += Vector3.Forward;
-            //if (keyState.IsKeyDown(Keys.S)) translation += Vector3.Backward;
-            //if (keyState.IsKeyDown(Keys.A)) translation += Vector3.Left;
-            //if (keyState.IsKeyDown(Keys.D)) translation += Vector3.Right;
             if (keyState.IsKeyDown(Keys.Escape))
             {
                 graphics.IsFullScreen = false;
@@ -237,9 +219,6 @@ namespace LunarLander3D
             // Move 3 units per millisecond, independent of frame rate
             translation *= 4 *
                 (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-
-            // Move the camera
-            //((FreeCamera)camera).Move(translation);
 
             // Move the camera to the new model's position and orientation
             ((ChaseCamera)camera).Move(models[index].Position, models[index].Rotation);
@@ -262,13 +241,13 @@ namespace LunarLander3D
 
             // Determine on which axes the ship should be rotated on, if any
             if (keyState.IsKeyDown(Keys.W))
-                rotChange += new Vector3(0.5f, 0, 0);
+                rotChange += new Vector3(1, 0, 0);
             if (keyState.IsKeyDown(Keys.S))
-                rotChange += new Vector3(-0.5f, 0, 0);
+                rotChange += new Vector3(-1, 0, 0);
             if (keyState.IsKeyDown(Keys.A))
-                rotChange += new Vector3(0, 0.5f, 0);
+                rotChange += new Vector3(0, 1, 0);
             if (keyState.IsKeyDown(Keys.D))
-                rotChange += new Vector3(0, -0.5f, 0);
+                rotChange += new Vector3(0, -1, 0);
 
             // Posiciona a Capsula no centro do cenário posição Zero
             if (keyState.IsKeyDown(Keys.Z))
@@ -277,7 +256,6 @@ namespace LunarLander3D
                 models[index].Rotation = rotChange;
                 models[index].Position = LanderDown;
             }
-
 
             // Move no eixo Z para avançar
             if (keyState.IsKeyDown(Keys.Up))
@@ -318,13 +296,10 @@ namespace LunarLander3D
             if (models[index].Position.Y <= 1550)
             {
                 models[index].Position = new Vector3(models[index].Position.X, 1550, models[index].Position.Z);
-                if (Keyboard.GetState().IsKeyUp(Keys.X) && shuttleSpeed.Y <= 0) shuttleSpeed = Vector3.Zero;
+                if (keyState.IsKeyUp(Keys.X) && shuttleSpeed.Y <=0) shuttleSpeed = Vector3.Zero;            
             }
 
             models[index].Position += shuttleSpeed * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
-
-            
-
 
             // If space isn't down, the ship shouldn't move
             //if (!keyState.IsKeyDown(Keys.Space))
@@ -509,16 +484,13 @@ namespace LunarLander3D
                     // adicionar nova camera
 
                     GraphicsDevice.Viewport = defaultViewport;
+
+                    //spriteBatch.DrawString(arial, "Combustivel: " + (int)combustivel, new Vector2(1025, 0), Color.Yellow);
     
                     sky.Draw(camera.View, camera.Projection, ((ChaseCamera)camera).Position);
                     terrain.Draw(camera.View, camera.Projection);
                     
-                    spriteBatch.DrawString(arial,
-                            "Model Position " + models[index].Position +
-                            "\nModel Rotation: " + models[index].Rotation +
-                            "\nEsc = Exit",
-                            Vector2.Zero,
-                            Color.Yellow);
+
 
                     foreach (CModel model in models)
                     {
@@ -535,24 +507,24 @@ namespace LunarLander3D
 
                     GraphicsDevice.Viewport = mapViewport;
 
-                    
-                    sky.Draw(camera.View, camera.Projection, ((ChaseCamera)camera).Position);
-                    terrain.Draw(camera.View, camera.Projection);
-                    
-                    spriteBatch.DrawString(arial,
-                            "Model Position " + models[index].Position +
-                            "\nModel Rotation: " + models[index].Rotation +
-                            "\nShuttleSpeedY:" + shuttleSpeed,
-                            Vector2.Zero,
-                            Color.Yellow);
 
-                    spriteBatch.DrawString(arial, "Combustivel: " + (int)combustivel, new Vector2(1025, 0), Color.Yellow);
+                    sky.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCamera)camera).Position);
+                    terrain.Draw(cameraTop.View, cameraTop.Projection);
+                    
+                    //spriteBatch.DrawString(arial,
+                    //        "Model Position " + models[index].Position +
+                    //        "\nModel Rotation: " + models[index].Rotation +
+                    //        "\nShuttleSpeedY:" + shuttleSpeed,
+                    //        Vector2.Zero,
+                    //        Color.Yellow);
+
+
 
                     foreach (CModel model in models)
                     {
                         if (camera.BoundingVolumeIsInView(model.BoundingSphere))
-                        { 
-                            model.Draw(camera.View, camera.Projection, ((ChaseCamera)camera).Position); 
+                        {
+                            model.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCamera)camera).Position); 
                         }
                         //if (cameraTop.BoundingVolumeIsInView(model.BoundingSphere))
                         //{
@@ -564,6 +536,18 @@ namespace LunarLander3D
                     
                     //sky.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position);
                     //terrain.Draw(cameraTop.View, cameraTop.Projection); // teste1
+
+                    GraphicsDevice.Viewport = defaultViewport;
+
+                    //spriteBatch.DrawString(arial, "Combustivel: " + (int)combustivel, new Vector2(1025, 0), Color.Yellow);
+
+                    spriteBatch.DrawString(arial,
+                            "Model Position " + models[index].Position +
+                            "\nModel Rotation: " + models[index].Rotation +
+                            "\nEsc = Exit" +
+                            "\nCombustível : " + (int)combustivel,
+                            Vector2.Zero,
+                            Color.Yellow);
 
                     break;
 
