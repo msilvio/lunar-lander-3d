@@ -262,13 +262,13 @@ namespace LunarLander3D
 
             // Determine on which axes the ship should be rotated on, if any
             if (keyState.IsKeyDown(Keys.W))
-                rotChange += new Vector3(1, 0, 0);
+                rotChange += new Vector3(0.5f, 0, 0);
             if (keyState.IsKeyDown(Keys.S))
-                rotChange += new Vector3(-1, 0, 0);
+                rotChange += new Vector3(-0.5f, 0, 0);
             if (keyState.IsKeyDown(Keys.A))
-                rotChange += new Vector3(0, 1, 0);
+                rotChange += new Vector3(0, 0.5f, 0);
             if (keyState.IsKeyDown(Keys.D))
-                rotChange += new Vector3(0, -1, 0);
+                rotChange += new Vector3(0, -0.5f, 0);
 
             // Posiciona a Capsula no centro do cenário posição Zero
             if (keyState.IsKeyDown(Keys.Z))
@@ -318,7 +318,7 @@ namespace LunarLander3D
             if (models[index].Position.Y <= 1550)
             {
                 models[index].Position = new Vector3(models[index].Position.X, 1550, models[index].Position.Z);
-                shuttleSpeed = Vector3.Zero;
+                if (Keyboard.GetState().IsKeyUp(Keys.X) && shuttleSpeed.Y <= 0) shuttleSpeed = Vector3.Zero;
             }
 
             models[index].Position += shuttleSpeed * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
