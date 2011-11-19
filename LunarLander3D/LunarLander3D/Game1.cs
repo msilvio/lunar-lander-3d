@@ -15,7 +15,8 @@ namespace LunarLander3D
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        
+
+        float combustivel = 4000;
 
         VideoPlayer player;
         Video video, video1;
@@ -35,7 +36,7 @@ namespace LunarLander3D
         int index, cont = 0;
         Vector3 LanderDown = new Vector3(500, 4550, -1000); // 500, 2350, -1000
         float gravity = -0.00003f;
-        float shuttleSpeed = 0;
+        Vector3 shuttleSpeed = Vector3.Zero;
         List<CModel> models = new List<CModel>();
 
         Terrain terrain;
@@ -241,12 +242,6 @@ namespace LunarLander3D
                 models[index].Position = LanderDown;
             }
 
-            // Move no eixo Y para subir
-            if (keyState.IsKeyDown(Keys.X))
-            {
-                shuttleSpeed += 0.0001f * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
-                
-            }
 
             // Move no eixo Z para avançar
             if (keyState.IsKeyDown(Keys.Up))
@@ -280,30 +275,37 @@ namespace LunarLander3D
 
 
             //Physics Update
-            shuttleSpeed += gravity * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
+            shuttleSpeed += new Vector3(0, gravity, 0) * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
 
             if (models[index].Position.Y <= 1550)
             {
                 models[index].Position = new Vector3(models[index].Position.X, 1550, models[index].Position.Z);
-                shuttleSpeed = 0f;
+                shuttleSpeed = Vector3.Zero;
             }
 
-            models[index].Position += new Vector3(0, shuttleSpeed, 0) * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
+            models[index].Position += shuttleSpeed * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
 
             
 
 
             // If space isn't down, the ship shouldn't move
-            if (!keyState.IsKeyDown(Keys.Space))
-                return;
+            //if (!keyState.IsKeyDown(Keys.Space))
+              //  return;
 
             // Determine what direction to move in
             Matrix rotation = Matrix.CreateFromYawPitchRoll(
                 models[index].Rotation.Y, models[index].Rotation.X, models[index].Rotation.Z);
 
+            // Move no eixo Y para subir
+            if (keyState.IsKeyDown(Keys.X))
+            {
+                if (shuttleSpeed.Y < 2f) shuttleSpeed += (Vector3.Transform(new Vector3(0, 0.0001f, 0), rotation) * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4);
+                combustivel -= 2.5f;
+            }
+
             // Move in the direction dictated by our rotation matrix
-            models[index].Position += Vector3.Transform(Vector3.Forward, rotation)
-                * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
+            //models[index].Position += Vector3.Transform(Vector3.Forward, rotation)
+              //  * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
         }
 
         protected override void Update(GameTime gameTime)
@@ -433,6 +435,11 @@ namespace LunarLander3D
             base.Update(gameTime);
         }
 
+        protected void UpdateCollision(GameTime gameTime)
+        {
+
+        }
+
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -445,7 +452,7 @@ namespace LunarLander3D
                     spriteBatch.Draw(videoTexture, Vector2.Zero, Color.White);
                     spriteBatch.DrawString(arial,
                         "Press Escape to skip video",
-                        new Vector2(50, 660),
+                        new Vector2(52, 662),
                         Color.Black);
                     spriteBatch.DrawString(arial,
                         "Press Escape to skip video",
@@ -471,9 +478,11 @@ namespace LunarLander3D
                     spriteBatch.DrawString(arial,
                             "Model Position " + models[index].Position +
                             "\nModel Rotation: " + models[index].Rotation +
-                            "\nEsc = Exit",
+                            "\nShuttleSpeedY:" + shuttleSpeed,
                             Vector2.Zero,
                             Color.Yellow);
+
+                    spriteBatch.DrawString(arial, "Combustivel: " + (int)combustivel, new Vector2(1025, 0), Color.Yellow);
 
                     foreach (CModel model in models)
                     {

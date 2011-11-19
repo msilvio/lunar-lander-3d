@@ -99,7 +99,7 @@ namespace LunarLander3D
 
             for (int i = 0; i < strings.Count(); i++)
             {
-                //spriteBatch.DrawString(spriteFont, strings[i], new Vector2(menuStartX + 3, menuStartY + (i * 40) + 3), Color.Black);
+                spriteBatch.DrawString(spriteFont, strings[i], new Vector2(menuStartX + 2, menuStartY + (i * 40) + 2), Color.Black);
                 spriteBatch.DrawString(spriteFont, strings[i], new Vector2(menuStartX, menuStartY + (i * 40)), Color.Yellow); 
             }
             spriteBatch.Draw(arrowTexture, arrowPosition, Color.White);
