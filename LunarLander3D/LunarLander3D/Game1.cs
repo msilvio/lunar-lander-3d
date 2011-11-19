@@ -15,6 +15,7 @@ namespace LunarLander3D
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        
 
         VideoPlayer player;
         Video video, video1;
@@ -32,7 +33,9 @@ namespace LunarLander3D
         // Lunar Pod
         int modelScale = 20;
         int index, cont = 0;
-        Vector3 LanderDown = new Vector3(500, 1550, -1000); // 500, 2350, -1000
+        Vector3 LanderDown = new Vector3(500, 4550, -1000); // 500, 2350, -1000
+        float gravity = -0.00003f;
+        float shuttleSpeed = 0;
         List<CModel> models = new List<CModel>();
 
         Terrain terrain;
@@ -155,6 +158,8 @@ namespace LunarLander3D
             renderer.DoShadowMapping = true;
             renderer.ShadowMult = 0.3f;
 
+
+
             //sky = new SkySphere(Content, GraphicsDevice,
             //    Content.Load<TextureCube>("test"));
 
@@ -239,8 +244,8 @@ namespace LunarLander3D
             // Move no eixo Y para subir
             if (keyState.IsKeyDown(Keys.X))
             {
-                models[index].Position += new Vector3(0, 1, 0) *
-                    (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
+                shuttleSpeed += 0.0001f * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
+                
             }
 
             // Move no eixo Z para avançar
@@ -272,6 +277,13 @@ namespace LunarLander3D
             }
 
             models[index].Rotation += rotChange * .025f;
+
+
+            //Physics Update
+            shuttleSpeed += gravity * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
+
+            models[index].Position += new Vector3(0, shuttleSpeed, 0) * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
+
 
             // If space isn't down, the ship shouldn't move
             if (!keyState.IsKeyDown(Keys.Space))
