@@ -37,6 +37,7 @@ namespace LunarLander3D
         Vector3 LanderDown = new Vector3(500, 4550, -1000); // 500, 2350, -1000
         float gravity = -0.00003f;
         Vector3 shuttleSpeed = Vector3.Zero;
+        Vector3 friction = Vector3.Zero; 
         List<CModel> models = new List<CModel>();
 
         Terrain terrain;
@@ -276,6 +277,8 @@ namespace LunarLander3D
 
             //Physics Update
             shuttleSpeed += new Vector3(0, gravity, 0) * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
+            friction = shuttleSpeed * -0.005f;
+            shuttleSpeed += friction;
 
             if (models[index].Position.Y <= 1550)
             {
