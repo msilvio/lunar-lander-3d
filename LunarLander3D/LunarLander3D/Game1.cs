@@ -20,6 +20,7 @@ namespace LunarLander3D
         VideoPlayer player;
         Video video, video1;
         Texture2D videoTexture;
+        Texture2D mapBorder;
         bool played;
 
         enum Screens { INTRO, MENU, GAME, INSTRUCTION };
@@ -103,6 +104,8 @@ namespace LunarLander3D
             arial = Content.Load<SpriteFont>("arial");
 
             telaMenu = Content.Load<Texture2D>("Graphics/logo_screen");
+
+            mapBorder = Content.Load<Texture2D>("Graphics/border");
 
             models.Add(new CModel(Content.Load<Model>("ground"),
                 new Vector3(0, -2000, 0), Vector3.Zero, new Vector3(1, 1, 1), GraphicsDevice));
@@ -240,9 +243,9 @@ namespace LunarLander3D
             Vector3 rotChange = new Vector3(0, 0, 0);
 
             // Determine on which axes the ship should be rotated on, if any
-            if (keyState.IsKeyDown(Keys.W))
+            if (keyState.IsKeyDown(Keys.S) && models[index].Rotation.X < 0.5f)
                 rotChange += new Vector3(1, 0, 0);
-            if (keyState.IsKeyDown(Keys.S))
+            if (keyState.IsKeyDown(Keys.W) && models[index].Rotation.X > -0.5f)
                 rotChange += new Vector3(-1, 0, 0);
             if (keyState.IsKeyDown(Keys.A))
                 rotChange += new Vector3(0, 1, 0);
@@ -540,6 +543,8 @@ namespace LunarLander3D
                     GraphicsDevice.Viewport = defaultViewport;
 
                     //spriteBatch.DrawString(arial, "Combustivel: " + (int)combustivel, new Vector2(1025, 0), Color.Yellow);
+
+                    spriteBatch.Draw(mapBorder, new Vector2(940, 0), Color.White); 
 
                     spriteBatch.DrawString(arial,
                             "Model Position " + models[index].Position +
