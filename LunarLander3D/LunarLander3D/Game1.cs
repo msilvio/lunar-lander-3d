@@ -97,8 +97,8 @@ namespace LunarLander3D
 
         protected override void LoadContent()
         {
-            video = Content.Load<Video>("Lunar3D_Show");
-            video1 = Content.Load<Video>("Lunar_menu");
+            video = Content.Load<Video>("Videos/Lunar3D_Show");
+            video1 = Content.Load<Video>("Videos/Lunar_menu");
             player = new VideoPlayer();
 
             arial = Content.Load<SpriteFont>("arial");
@@ -154,8 +154,11 @@ namespace LunarLander3D
             cameraTop = new ChaseCameraRadar(cameraPosTop, new Vector3(0, 0, 0), 
                 new Vector3(0, 0, 0), GraphicsDevice);
 
+            //sky = new SkySphere(Content, GraphicsDevice,
+            //    Content.Load<TextureCube>("Graphics/uffizi_cross")); // 
+
             sky = new SkySphere(Content, GraphicsDevice,
-                Content.Load<TextureCube>("clouds"));
+                Content.Load<TextureCube>("Graphics/Black_sky"));
 
             renderer = new PrelightingRenderer(GraphicsDevice, Content);
             renderer.Models = models;
@@ -315,8 +318,12 @@ namespace LunarLander3D
             // Move no eixo Y para subir
             if (keyState.IsKeyDown(Keys.X))
             {
-                if (shuttleSpeed.Y < 2f) shuttleSpeed += (Vector3.Transform(new Vector3(0, 0.0001f, 0), rotation) * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4);
-                combustivel -= 2.5f;
+                if (shuttleSpeed.Y < 2f)
+                {
+                    shuttleSpeed += (Vector3.Transform(new Vector3(0, 0.0001f, 0), rotation) * 
+                        (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4);
+                    combustivel -= 2.5f;
+                }
             }
 
             // Move in the direction dictated by our rotation matrix
@@ -400,34 +407,13 @@ namespace LunarLander3D
                     float deltaX = (float)lastMouseState.X - (float)mouseState.X;
                     float deltaY = (float)lastMouseState.Y - (float)mouseState.Y;
 
-                    // Rotate the camera
-                    //((FreeCamera)camera).Rotate(deltaX * .005f, deltaY * .005f); // retirado para usar chasecamera
-
                     Vector3 translation = Vector3.Zero;
 
-                    // Determine in which direction to move the camera
-                    //if (keyState.IsKeyDown(Keys.W)) translation += Vector3.Forward;
-                    //if (keyState.IsKeyDown(Keys.S)) translation += Vector3.Backward;
-                    //if (keyState.IsKeyDown(Keys.A)) translation += Vector3.Left;
-                    //if (keyState.IsKeyDown(Keys.D)) translation += Vector3.Right;
                     if (keyState.IsKeyDown(Keys.Escape)) this.Exit();
-
-                    if (keyState.IsKeyDown(Keys.Right))
-                    {
-                        //models[1].Position.X += 10;
-                    }
-
-                    if (keyState.IsKeyDown(Keys.Left))
-                    {
-
-                    }
 
                     // Move 3 units per millisecond, independent of frame rate
                     translation *= 4 *
                         (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-
-                    // Move the camera
-                    //((FreeCamera)camera).Move(translation);
 
                     // Update the camera
                     updateModel(gameTime);
@@ -511,7 +497,7 @@ namespace LunarLander3D
                     GraphicsDevice.Viewport = mapViewport;
 
 
-                    sky.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCamera)camera).Position);
+                    sky.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position);
                     terrain.Draw(cameraTop.View, cameraTop.Projection);
                     
                     //spriteBatch.DrawString(arial,
@@ -527,7 +513,7 @@ namespace LunarLander3D
                     {
                         if (camera.BoundingVolumeIsInView(model.BoundingSphere))
                         {
-                            model.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCamera)camera).Position); 
+                            model.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position); 
                         }
                         //if (cameraTop.BoundingVolumeIsInView(model.BoundingSphere))
                         //{
