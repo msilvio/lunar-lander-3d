@@ -69,7 +69,7 @@
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
-    <Compile Include="clouds.dds">
+    <Compile Include="Graphics\clouds.dds">
       <Name>clouds</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -233,14 +233,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Lunar3D_Show.wmv">
+    <Compile Include="Videos\Lunar3D_Show.wmv">
       <Name>Lunar3D_Show</Name>
       <Importer>WmvImporter</Importer>
       <Processor>VideoProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Lunar_menu.wmv">
+    <Compile Include="Videos\Lunar_menu.wmv">
       <Name>Lunar_menu</Name>
       <Importer>WmvImporter</Importer>
       <Processor>VideoProcessor</Processor>
@@ -306,6 +306,13 @@
   <ItemGroup>
     <Compile Include="Graphics\border.png">
       <Name>border</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Graphics\Black_sky.dds">
+      <Name>Black_sky</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
