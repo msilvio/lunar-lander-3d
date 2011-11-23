@@ -154,9 +154,6 @@ namespace LunarLander3D
             cameraTop = new ChaseCameraRadar(cameraPosTop, new Vector3(0, 0, 0), 
                 new Vector3(0, 0, 0), GraphicsDevice);
 
-            //sky = new SkySphere(Content, GraphicsDevice,
-            //    Content.Load<TextureCube>("Graphics/uffizi_cross")); // 
-
             sky = new SkySphere(Content, GraphicsDevice,
                 Content.Load<TextureCube>("Graphics/Black_sky"));
 
@@ -179,19 +176,16 @@ namespace LunarLander3D
             mapViewport.Y = 10;
 
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(
-        MathHelper.PiOver4, 
-        16.0f / 9.0f,
-        1.0f,
-        10000f);
-        
-            mapProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(
-                MathHelper.PiOver4,
-                2.0f / 2.0f,
+                MathHelper.PiOver4, 
+                16.0f / 9.0f,
                 1.0f,
                 10000f);
-
-            //sky = new SkySphere(Content, GraphicsDevice,
-            //    Content.Load<TextureCube>("test"));
+        
+            //mapProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(
+            //    MathHelper.PiOver4,
+            //    2.0f / 2.0f,
+            //    1.0f,
+            //    10000f);
 
             lastMouseState = Mouse.GetState();
 
@@ -469,66 +463,37 @@ namespace LunarLander3D
                     break;
 
                 case Screens.GAME:
-                    //sky.Draw(camera.View, camera.Projection, ((FreeCamera)camera).Position);
-                    // adicionar nova camera
 
+                    // ViewPort Principal
                     GraphicsDevice.Viewport = defaultViewport;
-
-                    //spriteBatch.DrawString(arial, "Combustivel: " + (int)combustivel, new Vector2(1025, 0), Color.Yellow);
-    
+  
                     sky.Draw(camera.View, camera.Projection, ((ChaseCamera)camera).Position);
                     terrain.Draw(camera.View, camera.Projection);
-                    
-
 
                     foreach (CModel model in models)
                     {
                         if (camera.BoundingVolumeIsInView(model.BoundingSphere))
                         { 
                             model.Draw(camera.View, camera.Projection, ((ChaseCamera)camera).Position); 
-                        }
-                        //if (cameraTop.BoundingVolumeIsInView(model.BoundingSphere))
-                        //{
-                        //    model.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position);
-                        //}
-                        
+                        }                       
                     }
 
+                    // ViewPort secundário
                     GraphicsDevice.Viewport = mapViewport;
-
 
                     sky.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position);
                     terrain.Draw(cameraTop.View, cameraTop.Projection);
                     
-                    //spriteBatch.DrawString(arial,
-                    //        "Model Position " + models[index].Position +
-                    //        "\nModel Rotation: " + models[index].Rotation +
-                    //        "\nShuttleSpeedY:" + shuttleSpeed,
-                    //        Vector2.Zero,
-                    //        Color.Yellow);
-
-
-
                     foreach (CModel model in models)
                     {
                         if (camera.BoundingVolumeIsInView(model.BoundingSphere))
                         {
                             model.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position); 
-                        }
-                        //if (cameraTop.BoundingVolumeIsInView(model.BoundingSphere))
-                        //{
-                        //    model.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position);
-                        //}
-                        
+                        }                       
                     }
-                    /*******view port*************/
-                    
-                    //sky.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position);
-                    //terrain.Draw(cameraTop.View, cameraTop.Projection); // teste1
 
+                    /*******view port reload************/
                     GraphicsDevice.Viewport = defaultViewport;
-
-                    //spriteBatch.DrawString(arial, "Combustivel: " + (int)combustivel, new Vector2(1025, 0), Color.Yellow);
 
                     spriteBatch.Draw(mapBorder, new Vector2(940, 0), Color.White); 
 
