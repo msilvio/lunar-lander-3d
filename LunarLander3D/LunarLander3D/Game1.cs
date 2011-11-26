@@ -11,6 +11,9 @@ using Microsoft.Xna.Framework.Media;
 
 namespace LunarLander3D
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
@@ -31,13 +34,32 @@ namespace LunarLander3D
         Texture2D mapBorder;
         bool played;
 
-        enum Screens { INTRO, MENU, GAME, INSTRUCTION, GAMEOVER };
+        /// <summary>
+        /// Enum utilizado para enumerar as telas do jogo
+        /// </summary>
+        enum Screens { INTRO, MENU, GAME, INSTRUCTION, GAMEOVER }; 
+     
+        /// <summary>
+       /// Definição de qual tela começará o jogo
+       /// </summary>
         Screens currentScreen = Screens.INTRO;
-        KeyboardState previousState;
+       
+        KeyboardState previousState; 
         GamePadState gamePadState = new GamePadState();
 
+        /// <summary>
+        /// SriteFont utilizado para representar a fonte do texto
+        /// </summary>
         SpriteFont arial;
+
+        /// <summary>
+        /// Textura da tela de menu do jogo
+        /// </summary>
         Texture2D telaMenu;
+
+        /// <summary>
+        /// Carregamento da classe menu
+        /// </summary>
         Menu menu = new Menu();
 
         // Lunar Pod
@@ -51,6 +73,10 @@ namespace LunarLander3D
 
         Terrain terrain;
         Camera camera, cameraTop;
+
+        /// <summary>
+        /// Carregamento da classe SkySphere que desenha o mapa no formato de um esfera
+        /// </summary>
         SkySphere sky;
 
         // Posição inicial da camera  - 0, 600, 1500  // 8000, 6000, 8000 // 0, 400, 1200
@@ -81,11 +107,14 @@ namespace LunarLander3D
         ///// </summary>
         //Matrix mapProjectionMatrix;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-
+                        
             Window.Title = "Lunar Lander 3D";
 
             IsMouseVisible = false;
@@ -96,8 +125,12 @@ namespace LunarLander3D
             graphics.ApplyChanges();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected override void Initialize()
         {
+            
             player = new VideoPlayer();
             spriteBatch = new SpriteBatch(this.GraphicsDevice);
             menu.Initialize(this.Content);
@@ -221,6 +254,10 @@ namespace LunarLander3D
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gameTime"></param>
         void updateCamera(GameTime gameTime)
         {
             // Get the new keyboard and mouse state

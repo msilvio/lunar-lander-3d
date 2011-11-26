@@ -14,6 +14,12 @@ namespace LunarLander3D
         Effect effect;
         GraphicsDevice graphics;
 
+        /// <summary>
+        /// Cria um cubo que recebrá a projeção da textura fornecida
+        /// </summary>
+        /// <param name="Content"></param>
+        /// <param name="GraphicsDevice"></param>
+        /// <param name="Texture"></param>
         public SkySphere(ContentManager Content, GraphicsDevice GraphicsDevice, 
             TextureCube Texture)
         {
@@ -28,6 +34,12 @@ namespace LunarLander3D
             this.graphics = GraphicsDevice;
         }
 
+        /// <summary>
+        /// Desenha um mapa de textura cubico que será projetado no cubo criado pela classe
+        /// </summary>
+        /// <param name="View"></param>
+        /// <param name="Projection"></param>
+        /// <param name="CameraPosition"></param>
         public void Draw(Matrix View, Matrix Projection, Vector3 CameraPosition)
         {
             // Disable the depth buffer
