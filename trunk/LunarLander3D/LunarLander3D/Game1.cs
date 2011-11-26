@@ -17,6 +17,11 @@ namespace LunarLander3D
         SpriteBatch spriteBatch;
         float combustivel = 4000;
         float oxigenio = 5000;
+        int conta1 = 100;
+        int conta2 = 100;
+
+        Texture2D RedBarImg, GreenBarImg;
+        StatusBar RedBar, GreenBar;
 
         VideoPlayer player;
         Video video, video1;
@@ -102,6 +107,13 @@ namespace LunarLander3D
             video1 = Content.Load<Video>("Videos/Lunar_menu");
             player = new VideoPlayer();
 
+            RedBarImg = Content.Load<Texture2D>("Graphics/Bar");
+            GreenBarImg = Content.Load<Texture2D>("Graphics/Bar");
+
+            RedBar = new StatusBar(RedBarImg, GraphicsDevice.Viewport, new Vector2(830, 30), (int)oxigenio);
+            GreenBar = new StatusBar(RedBarImg, GraphicsDevice.Viewport, new Vector2(830, 160), (int)combustivel);
+
+                    
             arial = Content.Load<SpriteFont>("arial");
 
             telaMenu = Content.Load<Texture2D>("Graphics/logo_screen");
@@ -247,8 +259,13 @@ namespace LunarLander3D
 
             Vector3 rotChange = new Vector3(0, 0, 0);
 
+            conta1 = (int)(oxigenio / 50);
+            RedBar.tamanho = conta1;
             oxigenio -= 1f;
 
+            //RedBar.tamanho = (int)oxigenio;
+            RedBar.Update(gameTime);
+            GreenBar.Update(gameTime);
             if ((oxigenio <= 0) || (combustivel <=0))
             {
                 //combustivel = 4000;
@@ -333,6 +350,8 @@ namespace LunarLander3D
                 {
                     shuttleSpeed += (Vector3.Transform(new Vector3(0, 0.0001f, 0), rotation) * 
                         (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4);
+                    conta2 = (int)(combustivel / 40);
+                    GreenBar.tamanho = conta2;
                     combustivel -= 2.5f;
                 }
             }
@@ -433,6 +452,8 @@ namespace LunarLander3D
                     updateCamera(gameTime);
                     //camera.Update();
 
+                    //RedBar.Update(gameTime, Vector2.Zero);
+
                     // Update the mouse state
                     lastMouseState = mouseState;
                     break;
@@ -518,14 +539,17 @@ namespace LunarLander3D
                     /*******view port reload************/
                     GraphicsDevice.Viewport = defaultViewport;
 
-                    spriteBatch.Draw(mapBorder, new Vector2(940, 0), Color.White); 
-
+                    spriteBatch.Draw(mapBorder, new Vector2(940, 0), Color.White);
+                    RedBar.Draw(spriteBatch);
+                    GreenBar.Draw(spriteBatch);
                     spriteBatch.DrawString(arial,
                             "Model Position "    + models[index].Position +
                             "\nModel Rotation: " + models[index].Rotation +
                             "\nEsc = Exit" +
-                            "\nCombustível : "   + combustivel + 
-                            "\nOxigenio    : "   + oxigenio,
+                            "\nOxigenio    : "   + oxigenio +
+                            "\nConta1: " + conta1 +
+                            "\nCombustível : " + combustivel +
+                            "\nconta2: " + conta2,
                             Vector2.Zero,
                             Color.Yellow);
 
