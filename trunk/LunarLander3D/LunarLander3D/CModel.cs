@@ -188,6 +188,10 @@ namespace LunarLander3D
                     if (((MeshTag)part.Tag).CachedEffect != null)
                         part.Effect = ((MeshTag)part.Tag).CachedEffect;
         }
+
+        public float Combustivel { get; set; }
+
+        public float Oxigenio { get; set; }
     }
 
     public class MeshTag

@@ -16,6 +16,7 @@ namespace LunarLander3D
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         float combustivel = 4000;
+        float oxigenio = 5000;
 
         VideoPlayer player;
         Video video, video1;
@@ -23,7 +24,7 @@ namespace LunarLander3D
         Texture2D mapBorder;
         bool played;
 
-        enum Screens { INTRO, MENU, GAME, INSTRUCTION };
+        enum Screens { INTRO, MENU, GAME, INSTRUCTION, GAMEOVER };
         Screens currentScreen = Screens.INTRO;
         KeyboardState previousState;
 
@@ -67,10 +68,10 @@ namespace LunarLander3D
         /// </summary>
         Matrix projectionMatrix;
 
-        /// <summary>
-        /// projeção da viewport do mapa
-        /// </summary>
-        Matrix mapProjectionMatrix;
+        ///// <summary>
+        ///// projeção da viewport do mapa
+        ///// </summary>
+        //Matrix mapProjectionMatrix;
 
         public Game1()
         {
@@ -115,22 +116,29 @@ namespace LunarLander3D
                 Content.Load<Texture2D>("Graphics/terrain3"), 6, new Vector3(1, -1, 0), // 6
                 GraphicsDevice, Content);
 
-            models.Add(new CModel(Content.Load<Model>("brick_wall"),
-                new Vector3(0, -2000,0), new Vector3(0, 0, 0), Vector3.One, GraphicsDevice));
+            //models.Add(new CModel(Content.Load<Model>("brick_wall"),
+            //    new Vector3(0, -2000,0), new Vector3(0, 0, 0), Vector3.One, GraphicsDevice));
 
-            // Capsula Lunar 2 posição no Array - colocar o index correto - index = 2
-            index = 2;
+            // Capsula Lunar 2 posição no Array - colocar o index correto - index = 2 / Agora index =1
+            index = 1;
             models.Add(new CModel(Content.Load<Model>("modulo1"),
                 LanderDown, Vector3.Zero, 
                 new Vector3(modelScale, modelScale, modelScale), 
                 GraphicsDevice));
 
+            //models.Add(new Lander(Content.Load<Model>("modulo1"),
+            //    LanderDown, Vector3.Zero,
+            //    new Vector3(modelScale, modelScale, modelScale),
+            //    GraphicsDevice,
+            //    combustivel,
+            //    oxigenio));
+
             Effect lightingEffect = Content.Load<Effect>("LightingEffect");
             LightingMaterial lightingMat = new LightingMaterial();
 
             Effect normalMapEffect = Content.Load<Effect>("NormalMapEffect");
-            NormalMapMaterial normalMat = new NormalMapMaterial(
-                Content.Load<Texture2D>("brick_normal_map"));
+            //NormalMapMaterial normalMat = new NormalMapMaterial(
+            //    Content.Load<Texture2D>("brick_normal_map"));
             
             //lightingMat.LightDirection = new Vector3(.5f, .5f, 1); // posição anterior da luz
             lightingMat.LightDirection = new Vector3(-1.5f, .8f, 1);
@@ -138,14 +146,14 @@ namespace LunarLander3D
 
             Effect effect = Content.Load<Effect>("VSM");
 
-            normalMat.LightDirection = new Vector3(.5f, .5f, 1);
-            normalMat.LightColor = Vector3.One;
+            //normalMat.LightDirection = new Vector3(.5f, .5f, 1);
+            //normalMat.LightColor = Vector3.One;
 
             models[0].SetModelEffect(lightingEffect, true);
-            models[1].SetModelEffect(normalMapEffect, true);
+            //models[1].SetModelEffect(normalMapEffect, true);
 
             models[0].Material = lightingMat;
-            models[1].Material = normalMat;
+            //models[1].Material = normalMat;
 
             // Antes do Shadow
             camera = new ChaseCamera(cameraPos, new Vector3(0, 200, 0), // 0, 200, 0
@@ -239,6 +247,15 @@ namespace LunarLander3D
 
             Vector3 rotChange = new Vector3(0, 0, 0);
 
+            oxigenio -= 1f;
+
+            if ((oxigenio <= 0) || (combustivel <=0))
+            {
+                //combustivel = 4000;
+                //oxigenio = 5000;
+                currentScreen = Screens.GAMEOVER;
+            }
+
             // Determine on which axes the ship should be rotated on, if any
             if (keyState.IsKeyDown(Keys.S) && models[index].Rotation.X < 0.5f)
                 rotChange += new Vector3(1, 0, 0);
@@ -319,6 +336,8 @@ namespace LunarLander3D
                     combustivel -= 2.5f;
                 }
             }
+
+            
 
             // Move in the direction dictated by our rotation matrix
             //models[index].Position += Vector3.Transform(Vector3.Forward, rotation)
@@ -425,6 +444,10 @@ namespace LunarLander3D
                         menu.Selected = Menu.Selection.NONE;
                     }
                     break;
+
+                case Screens.GAMEOVER:
+                    if (Keyboard.GetState().IsKeyDown(Keys.Escape)) this.Exit();
+                    break;
             }
 
             previousState = Keyboard.GetState();
@@ -498,10 +521,11 @@ namespace LunarLander3D
                     spriteBatch.Draw(mapBorder, new Vector2(940, 0), Color.White); 
 
                     spriteBatch.DrawString(arial,
-                            "Model Position " + models[index].Position +
+                            "Model Position "    + models[index].Position +
                             "\nModel Rotation: " + models[index].Rotation +
                             "\nEsc = Exit" +
-                            "\nCombustível : " + (int)combustivel,
+                            "\nCombustível : "   + combustivel + 
+                            "\nOxigenio    : "   + oxigenio,
                             Vector2.Zero,
                             Color.Yellow);
 
@@ -521,6 +545,18 @@ namespace LunarLander3D
                         new Vector2(100, 300),
                         Color.Yellow);
                      
+                    break;
+
+                case Screens.GAMEOVER:
+                    spriteBatch.Draw(telaMenu, Vector2.Zero, Color.White);
+                    spriteBatch.DrawString(arial,
+                        "Press Escape to exit",
+                        new Vector2(51, 661),
+                        Color.Black);
+                    spriteBatch.DrawString(arial,
+                        "Press Escape to exit",
+                        new Vector2(51, 661),
+                        Color.Yellow);
                     break;
             }
 
