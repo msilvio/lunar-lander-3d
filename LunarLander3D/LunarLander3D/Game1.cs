@@ -20,6 +20,8 @@ namespace LunarLander3D
         int conta1 = 100;
         int conta2 = 100;
 
+        int[] scorelist = new int[10];
+
         Texture2D RedBarImg, GreenBarImg;
         StatusBar RedBar, GreenBar;
 
@@ -210,6 +212,9 @@ namespace LunarLander3D
 
             lastMouseState = Mouse.GetState();
 
+            scorelist = Save.LoadScore();
+            Save.SaveScore(scorelist);
+
         }
 
         protected override void UnloadContent()
@@ -295,6 +300,7 @@ namespace LunarLander3D
                 //combustivel = 4000;
                 //oxigenio = 5000;
                 currentScreen = Screens.GAMEOVER;
+                Save.SaveScore(scorelist);
             }
 
             // Determine on which axes the ship should be rotated on, if any
@@ -613,6 +619,10 @@ namespace LunarLander3D
                         "Press Escape to exit",
                         new Vector2(51, 661),
                         Color.Yellow);
+                    foreach (int i in scorelist)
+                    {
+                        spriteBatch.DrawString(arial, "Score: " + i, new Vector2(300, 600), Color.Yellow);
+                    }
                     break;
             }
 
