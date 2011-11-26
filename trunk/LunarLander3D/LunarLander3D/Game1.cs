@@ -120,8 +120,8 @@ namespace LunarLander3D
 
             mapBorder = Content.Load<Texture2D>("Graphics/border");
 
-            models.Add(new CModel(Content.Load<Model>("ground"),
-                new Vector3(0, -2000, 0), Vector3.Zero, new Vector3(1, 1, 1), GraphicsDevice));
+            //models.Add(new CModel(Content.Load<Model>("ground"),
+               //new Vector3(0, -2000, 0), Vector3.Zero, new Vector3(1, 1, 1), GraphicsDevice));
 
             // 30, 4800 - 30, 9600 - 30, 3200 - 30, 256 (terrains 4 e 5)
             terrain = new Terrain(Content.Load<Texture2D>("Graphics/terrain3"), 30, 3200,
@@ -132,7 +132,7 @@ namespace LunarLander3D
             //    new Vector3(0, -2000,0), new Vector3(0, 0, 0), Vector3.One, GraphicsDevice));
 
             // Capsula Lunar 2 posição no Array - colocar o index correto - index = 2 / Agora index =1
-            index = 1;
+            index = 0;
             models.Add(new CModel(Content.Load<Model>("modulo1"),
                 LanderDown, Vector3.Zero, 
                 new Vector3(modelScale, modelScale, modelScale), 
@@ -161,10 +161,10 @@ namespace LunarLander3D
             //normalMat.LightDirection = new Vector3(.5f, .5f, 1);
             //normalMat.LightColor = Vector3.One;
 
-            models[0].SetModelEffect(lightingEffect, true);
+            //models[0].SetModelEffect(lightingEffect, true);
             //models[1].SetModelEffect(normalMapEffect, true);
 
-            models[0].Material = lightingMat;
+            //models[0].Material = lightingMat;
             //models[1].Material = normalMat;
 
             // Antes do Shadow
