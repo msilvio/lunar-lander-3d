@@ -127,6 +127,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Save.cs" />
     <Compile Include="SkySphere.cs" />
     <Compile Include="StatusBar.cs" />
     <Compile Include="TargetCamera.cs" />
