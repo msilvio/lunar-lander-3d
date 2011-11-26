@@ -44,17 +44,20 @@ namespace LunarLander3D
 
         public void Update(KeyboardState keyboardState, KeyboardState previousState)
         {
-
+            //GamePadState gamePadState = new GamePadState();
             switch (arrowSelection)
             {
                 case Selection.START:
-                    if (keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) { Selected = Selection.START; }
+                    if (keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter)))
+                    { Selected = Selection.START; }
                     break;
                 case Selection.OPTIONS:
-                    if (keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) { Selected = Selection.OPTIONS; }
+                    if (keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) 
+                    { Selected = Selection.OPTIONS; }
                     break;
                 case Selection.EXIT:
-                    if (keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) { Selected = Selection.EXIT; }
+                    if (keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) 
+                    { Selected = Selection.EXIT; }
                     break;
                 //case Selection.CONTINUE:
                 //    if (keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) { Selected = Selection.CONTINUE; }
