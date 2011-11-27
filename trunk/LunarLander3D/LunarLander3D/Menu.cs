@@ -23,7 +23,7 @@ namespace LunarLander3D
         public Selection arrowSelection;
         public Selection Selected = Selection.NONE;
         public string[] strings = new string[3];
-        GamePadState gamePadStateprev;
+        //GamePadState gamePadStateprev;
 
         public void Initialize(ContentManager content)
         {

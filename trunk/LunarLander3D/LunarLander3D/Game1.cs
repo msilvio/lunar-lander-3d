@@ -34,6 +34,9 @@ namespace LunarLander3D
         Texture2D mapBorder;
         bool played;
 
+        private float titleScreenTimer = 0.0f;
+        private float titleScreenDelayTime = 1.0f;
+
         /// <summary>
         /// Enum utilizado para enumerar as telas do jogo
         /// </summary>
@@ -73,6 +76,8 @@ namespace LunarLander3D
 
         Terrain terrain;
         Camera camera, cameraTop;
+        // Parametro para alterar entre camera principal e secundaria
+        bool mainCam = true;
 
         /// <summary>
         /// Carregamento da classe SkySphere que desenha o mapa no formato de um esfera
@@ -144,10 +149,10 @@ namespace LunarLander3D
             player = new VideoPlayer();
 
             RedBarImg = Content.Load<Texture2D>("Graphics/Bar");
-            GreenBarImg = Content.Load<Texture2D>("Graphics/Bar");
+            GreenBarImg = Content.Load<Texture2D>("Graphics/GreenBar");
 
             RedBar = new StatusBar(RedBarImg, GraphicsDevice.Viewport, new Vector2(830, 30), (int)oxigenio);
-            GreenBar = new StatusBar(RedBarImg, GraphicsDevice.Viewport, new Vector2(830, 160), (int)combustivel);
+            GreenBar = new StatusBar(GreenBarImg, GraphicsDevice.Viewport, new Vector2(830, 160), (int)combustivel);
 
                     
             arial = Content.Load<SpriteFont>("arial");
@@ -325,9 +330,7 @@ namespace LunarLander3D
             GreenBar.Update(gameTime);
             if ((oxigenio <= 0) || (combustivel <=0))
             {
-                //combustivel = 4000;
-                //oxigenio = 5000;
-                currentScreen = Screens.GAMEOVER;
+                //currentScreen = Screens.GAMEOVER; // tirar o comentario dessa linha após os testes
                 Save.SaveScore(scorelist);
             }
 
@@ -338,7 +341,7 @@ namespace LunarLander3D
             // movimentos de deslocamentos nos eixos X e Z pelo GamePad
             models[index].Position +=
                 handleGamePadSlide(GamePad.GetState(PlayerIndex.One)) *
-                    (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
+                    (float)gameTime.ElapsedGameTime.TotalMilliseconds * 2;
 
             // Determine on which axes the ship should be rotated on, if any
             if (keyState.IsKeyDown(Keys.S) && models[index].Rotation.X < 0.5f)
@@ -357,6 +360,20 @@ namespace LunarLander3D
                 rotChange = new Vector3(0, 0, 0);
                 models[index].Rotation = rotChange;
                 models[index].Position = LanderDown;
+            }
+
+            // Controle de troca de camera entre os viewports
+            if (titleScreenTimer >= titleScreenDelayTime)
+            {
+                if (keyState.IsKeyDown(Keys.T)  ||
+                (GamePad.GetState(PlayerIndex.One).Buttons.RightShoulder == ButtonState.Pressed))
+                {
+                    mainCam = false;
+                }
+                else
+                {
+                    mainCam = true;
+                }
             }
 
             // Move no eixo Z para avançar
@@ -412,8 +429,8 @@ namespace LunarLander3D
                 models[index].Rotation.Y, models[index].Rotation.X, models[index].Rotation.Z);
 
             // Move no eixo Y para subir
-            if (keyState.IsKeyDown(Keys.X) ||  
-                (GamePad.GetState(PlayerIndex.One).Buttons.X == ButtonState.Pressed))
+            if (keyState.IsKeyDown(Keys.X) ||
+                (GamePad.GetState(PlayerIndex.One).Buttons.LeftShoulder == ButtonState.Pressed))
             {
                 if (shuttleSpeed.Y < 2f)
                 {
@@ -434,6 +451,10 @@ namespace LunarLander3D
 
         protected override void Update(GameTime gameTime)
         {
+
+            // incluido para controlar a execução inicial
+            titleScreenTimer +=
+                (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
@@ -484,7 +505,9 @@ namespace LunarLander3D
                     }
 
                     if (((played) && (player.State == MediaState.Stopped)) || 
-                        (Keyboard.GetState().IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter)))) 
+                        (Keyboard.GetState().IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter)) ||
+                        (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed)))
+                         
                     {
                         player.Stop();
                         switch (menu.Selected)
@@ -552,6 +575,82 @@ namespace LunarLander3D
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// Função para definir parametros de camera para visão principal
+        /// </summary>
+        private void mainViewPort()
+        {
+            GraphicsDevice.Viewport = defaultViewport;
+
+            sky.Draw(camera.View, camera.Projection, ((ChaseCamera)camera).Position);
+            terrain.Draw(camera.View, camera.Projection);
+
+            foreach (CModel model in models)
+            {
+                if (camera.BoundingVolumeIsInView(model.BoundingSphere))
+                {
+                    model.Draw(camera.View, camera.Projection, ((ChaseCamera)camera).Position);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Função para definir parametros de camera para visão principal invertida
+        /// </summary>
+        private void mainViewPortChange()
+        {
+            GraphicsDevice.Viewport = defaultViewport;
+
+            sky.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position);
+            terrain.Draw(cameraTop.View, cameraTop.Projection);
+
+            foreach (CModel model in models)
+            {
+                if (camera.BoundingVolumeIsInView(model.BoundingSphere))
+                {
+                    model.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Função para definir parametros de camera para visão secundaria
+        /// </summary>
+        private void childViewPort()
+        {
+            GraphicsDevice.Viewport = mapViewport;
+
+            sky.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position);
+            terrain.Draw(cameraTop.View, cameraTop.Projection);
+
+            foreach (CModel model in models)
+            {
+                if (camera.BoundingVolumeIsInView(model.BoundingSphere))
+                {
+                    model.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Função para definir parametros de camera para visão secundaria invertida
+        /// </summary>
+        private void childViewPortChange()
+        {
+            GraphicsDevice.Viewport = mapViewport;
+
+            sky.Draw(camera.View, camera.Projection, ((ChaseCamera)camera).Position);
+            terrain.Draw(camera.View, camera.Projection);
+
+            foreach (CModel model in models)
+            {
+                if (camera.BoundingVolumeIsInView(model.BoundingSphere))
+                {
+                    model.Draw(camera.View, camera.Projection, ((ChaseCamera)camera).Position);
+                }
+            }
+        }
+
         protected void UpdateCollision(GameTime gameTime)
         {
 
@@ -585,32 +684,19 @@ namespace LunarLander3D
 
                 case Screens.GAME:
 
-                    // ViewPort Principal
-                    GraphicsDevice.Viewport = defaultViewport;
-  
-                    sky.Draw(camera.View, camera.Projection, ((ChaseCamera)camera).Position);
-                    terrain.Draw(camera.View, camera.Projection);
-
-                    foreach (CModel model in models)
+                    if (mainCam)
                     {
-                        if (camera.BoundingVolumeIsInView(model.BoundingSphere))
-                        { 
-                            model.Draw(camera.View, camera.Projection, ((ChaseCamera)camera).Position); 
-                        }                       
+                        // ViewPort Principal
+                        mainViewPort();
+                        // ViewPort secundário
+                        childViewPort();
                     }
-
-                    // ViewPort secundário
-                    GraphicsDevice.Viewport = mapViewport;
-
-                    sky.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position);
-                    terrain.Draw(cameraTop.View, cameraTop.Projection);
-                    
-                    foreach (CModel model in models)
+                    else
                     {
-                        if (camera.BoundingVolumeIsInView(model.BoundingSphere))
-                        {
-                            model.Draw(cameraTop.View, cameraTop.Projection, ((ChaseCameraRadar)cameraTop).Position); 
-                        }                       
+                        // ViewPort Principal
+                        mainViewPortChange();
+                        // ViewPort secundário
+                        childViewPortChange();
                     }
 
                     /*******view port reload************/
@@ -638,6 +724,7 @@ namespace LunarLander3D
                         "Lunar controls:" + 
                         "\nKeys A & D Rotation Y" +
                         "\nKeys W & S Rotation X" +
+                        "\nKey T = Change camera view" +
                         "\nKey Z = Return to base" +
                         "\nKey X = Trust" +
                         "\nSpacebar = Trust forward" +
