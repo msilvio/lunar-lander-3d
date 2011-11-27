@@ -23,6 +23,7 @@ namespace LunarLander3D
         public Selection arrowSelection;
         public Selection Selected = Selection.NONE;
         public string[] strings = new string[3];
+        GamePadState gamePadStateprev;
 
         public void Initialize(ContentManager content)
         {
@@ -42,12 +43,25 @@ namespace LunarLander3D
             //strings[3] = "CARREGAR JOGO";
         }
 
-        public void Update(KeyboardState keyboardState, KeyboardState previousState)
+        public void Update(KeyboardState keyboardState, KeyboardState previousState, GamePadState gamePadState, GamePadState gamePadStateprev)
         {
-            //GamePadState gamePadState = new GamePadState();
+            // Controles do menu pelo Gamepad
+            //gamePadStateprev = GamePad.GetState(PlayerIndex.One);
+
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+            {
+                Selected = Selection.EXIT;
+            }
+
+            if ((gamePadState.Buttons.Start == ButtonState.Pressed) && 
+                (gamePadStateprev.Buttons.Start == ButtonState.Released))
+            { 
+                Selected = Selection.START; 
+            }
+
             switch (arrowSelection)
             {
-                case Selection.START:
+                case Selection.START: 
                     if (keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter)))
                     { Selected = Selection.START; }
                     break;
@@ -64,13 +78,18 @@ namespace LunarLander3D
                 //    break;
 
             }
-            if (keyboardState.IsKeyDown(Keys.Down) && (previousState.IsKeyUp(Keys.Down)))
+
+
+            if (keyboardState.IsKeyDown(Keys.Down) && (previousState.IsKeyUp(Keys.Down)) || 
+                gamePadState.DPad.Down == ButtonState.Pressed && gamePadStateprev.DPad.Down == ButtonState.Released)
             {
                 if (arrowSelectionIndex != strings.Count() - 1)
                     arrowSelectionIndex++;
                 else arrowSelectionIndex = 0;
             }
-            if (keyboardState.IsKeyDown(Keys.Up) && (previousState.IsKeyUp(Keys.Up)))
+
+            if (keyboardState.IsKeyDown(Keys.Up) && (previousState.IsKeyUp(Keys.Up)) ||
+                gamePadState.DPad.Up == ButtonState.Pressed && gamePadStateprev.DPad.Up == ButtonState.Released)
             {
                 if (arrowSelectionIndex != 0)
                     arrowSelectionIndex--;
