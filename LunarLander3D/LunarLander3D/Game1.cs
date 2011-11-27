@@ -45,7 +45,7 @@ namespace LunarLander3D
         Screens currentScreen = Screens.INTRO;
        
         KeyboardState previousState; 
-        GamePadState gamePadState = new GamePadState();
+        GamePadState gamePadStateprev;
 
         /// <summary>
         /// SriteFont utilizado para representar a fonte do texto
@@ -295,33 +295,24 @@ namespace LunarLander3D
             lastMouseState = mouseState;
         }
 
-        public void HandleGamepadInput()
+        private static Vector3 handleGamePadSlide(GamePadState gamepadState)
         {
-            GamePadState gamePadState = new GamePadState();
-            models[index].Position +=
-                new Vector3(gamePadState.ThumbSticks.Left.X * shuttleSpeed.X, 0, 0); // controle do GamePad travado em Y
-
-            if (models[index].Position.Y <= 1550)
-            {
-                models[index].Position = new Vector3(models[index].Position.X, 1550, models[index].Position.Z);
-                if ((gamePadState.Buttons.A == ButtonState.Pressed) && shuttleSpeed.Y <= 0) shuttleSpeed = Vector3.Zero;
-            }
-
-            if (gamePadState.Buttons.A == ButtonState.Pressed)
-            {
-
-                //Fire(true);
-            }
-
+            return new Vector3(
+                gamepadState.ThumbSticks.Right.X, 0,
+                -gamepadState.ThumbSticks.Right.Y);
         }
 
+        private static Vector3 handleGamePadMovement(GamePadState gamepadState)
+        {
+            return new Vector3(
+                gamepadState.ThumbSticks.Left.Y,
+                -gamepadState.ThumbSticks.Left.X,0);
+        }
 
         // Capsula Lunar 2 posição no Array
         void updateModel(GameTime gameTime)
         {
             KeyboardState keyState = Keyboard.GetState();
-            //GamePadState gamePadState;
-            HandleGamepadInput();
 
             Vector3 rotChange = new Vector3(0, 0, 0);
 
@@ -339,6 +330,15 @@ namespace LunarLander3D
                 currentScreen = Screens.GAMEOVER;
                 Save.SaveScore(scorelist);
             }
+
+            // movimentos de rotação eixos X e Y pelo GamePad
+            rotChange +=
+                handleGamePadMovement(GamePad.GetState(PlayerIndex.One));
+
+            // movimentos de deslocamentos nos eixos X e Z pelo GamePad
+            models[index].Position +=
+                handleGamePadSlide(GamePad.GetState(PlayerIndex.One)) *
+                    (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
 
             // Determine on which axes the ship should be rotated on, if any
             if (keyState.IsKeyDown(Keys.S) && models[index].Rotation.X < 0.5f)
@@ -473,7 +473,8 @@ namespace LunarLander3D
 
                 case Screens.MENU:
 
-                    menu.Update(Keyboard.GetState(), previousState);
+                    menu.Update(Keyboard.GetState(), previousState, 
+                                GamePad.GetState(PlayerIndex.One), gamePadStateprev);
 
                     if (player.State == MediaState.Stopped)
                     {
@@ -483,7 +484,7 @@ namespace LunarLander3D
                     }
 
                     if (((played) && (player.State == MediaState.Stopped)) || 
-                        (Keyboard.GetState().IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))))
+                        (Keyboard.GetState().IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter)))) 
                     {
                         player.Stop();
                         switch (menu.Selected)
@@ -547,6 +548,7 @@ namespace LunarLander3D
             }
 
             previousState = Keyboard.GetState();
+            gamePadStateprev = GamePad.GetState(PlayerIndex.One);
             base.Update(gameTime);
         }
 
