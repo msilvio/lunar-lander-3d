@@ -40,7 +40,7 @@ namespace LunarLander3D
         /// <summary>
         /// Enum utilizado para enumerar as telas do jogo
         /// </summary>
-        enum Screens { INTRO, MENU, GAME, INSTRUCTION, GAMEOVER }; 
+        enum Screens { INTRO, MENU, GAME, INSTRUCTION, GAMEOVER, CREDITS }; 
      
         /// <summary>
        /// Definição de qual tela começará o jogo
@@ -523,6 +523,10 @@ namespace LunarLander3D
                                 currentScreen = Screens.INSTRUCTION;
                                 menu.Selected = Menu.Selection.NONE;
                                 break;
+                            case Menu.Selection.CREDITS:
+                                currentScreen = Screens.CREDITS;
+                                menu.Selected = Menu.Selection.NONE;
+                                break;
                         }
                     }
                     videoTexture = player.GetTexture();
@@ -558,6 +562,14 @@ namespace LunarLander3D
                     break;
 
                 case Screens.INSTRUCTION:
+                    if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                    {
+                        currentScreen = Screens.MENU;
+                        menu.Selected = Menu.Selection.NONE;
+                    }
+                    break;
+
+                case Screens.CREDITS:
                     if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                     {
                         currentScreen = Screens.MENU;
@@ -733,6 +745,21 @@ namespace LunarLander3D
                         new Vector2(100, 300),
                         Color.Yellow);
                      
+                    break;
+
+                case Screens.CREDITS:
+                    spriteBatch.Draw(telaMenu, Vector2.Zero, Color.White);
+                    spriteBatch.DrawString(arial,
+                        "Lunar Lander 3D credits:" +
+                        "\n" +
+                        "\nSilvio Mendonca - Programmer" +
+                        "\nMarcos Thiago - Programmer" +
+                        "\nRodrigo Raiser - Programmer" +
+                        "\n" +
+                        "\nEscape = Return to Menu or",
+                        new Vector2(100, 300),
+                        Color.Yellow);
+
                     break;
 
                 case Screens.GAMEOVER:
