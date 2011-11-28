@@ -58,7 +58,7 @@ namespace LunarLander3D
         /// <summary>
         /// Textura da tela de menu do jogo
         /// </summary>
-        Texture2D telaMenu;
+        Texture2D telaMenu, telaMenuInst;
 
         /// <summary>
         /// Carregamento da classe menu
@@ -158,6 +158,8 @@ namespace LunarLander3D
             arial = Content.Load<SpriteFont>("arial");
 
             telaMenu = Content.Load<Texture2D>("Graphics/logo_screen");
+
+            telaMenuInst = Content.Load<Texture2D>("Graphics/logo_screen_menu");
 
             mapBorder = Content.Load<Texture2D>("Graphics/border");
 
@@ -731,7 +733,7 @@ namespace LunarLander3D
                     break;
 
                 case Screens.INSTRUCTION:
-                    spriteBatch.Draw(telaMenu, Vector2.Zero, Color.White);
+                    spriteBatch.Draw(telaMenuInst, Vector2.Zero, Color.White);
                     spriteBatch.DrawString(arial,
                         "Lunar controls:" + 
                         "\nKeys A & D Rotation Y" +
