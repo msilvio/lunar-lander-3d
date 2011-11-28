@@ -12,7 +12,7 @@ namespace LunarLander3D
 {
     class Menu
     {
-        public enum Selection { START, OPTIONS, EXIT, NONE, CONTINUE }
+        public enum Selection { START, OPTIONS, EXIT, NONE, CREDITS }
         public Texture2D arrowTexture;
         //public Texture2D background;
 
@@ -22,7 +22,7 @@ namespace LunarLander3D
         Rectangle arrowPosition;
         public Selection arrowSelection;
         public Selection Selected = Selection.NONE;
-        public string[] strings = new string[3];
+        public string[] strings = new string[4];
         //GamePadState gamePadStateprev;
 
         public void Initialize(ContentManager content)
@@ -39,8 +39,8 @@ namespace LunarLander3D
             //EXIT
             strings[2] = "EXIT";
 
-            ////CONTINUE
-            //strings[3] = "CARREGAR JOGO";
+            //CREDITS
+            strings[3] = "CREDITS";
         }
 
         public void Update(KeyboardState keyboardState, KeyboardState previousState, GamePadState gamePadState, GamePadState gamePadStateprev)
@@ -73,9 +73,10 @@ namespace LunarLander3D
                     if (keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) 
                     { Selected = Selection.EXIT; }
                     break;
-                //case Selection.CONTINUE:
-                //    if (keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) { Selected = Selection.CONTINUE; }
-                //    break;
+                case Selection.CREDITS:
+                    if (keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) 
+                    { Selected = Selection.CREDITS; }
+                    break;
 
             }
 
@@ -109,9 +110,9 @@ namespace LunarLander3D
                 case 2:
                     arrowSelection = Selection.EXIT;
                     break;
-                //case 3:
-                //    arrowSelection = Selection.CONTINUE;
-                //    break;
+                case 3:
+                    arrowSelection = Selection.CREDITS;
+                    break;
             }
         }
 
