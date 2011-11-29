@@ -30,6 +30,8 @@ namespace LunarLander3D
 
         VideoPlayer player;
         Video video, video1;
+        Song gameplayMusic;
+        SoundEffect rocketSound, explosionSound;
         Texture2D videoTexture;
         Texture2D mapBorder;
         bool played;
@@ -153,6 +155,11 @@ namespace LunarLander3D
 
             RedBar = new StatusBar(RedBarImg, GraphicsDevice.Viewport, new Vector2(830, 30), (int)oxigenio);
             GreenBar = new StatusBar(GreenBarImg, GraphicsDevice.Viewport, new Vector2(830, 160), (int)combustivel);
+
+            // Audio
+            gameplayMusic = Content.Load<Song>("Sounds/Blake-Nowhere-near");
+            rocketSound = Content.Load<SoundEffect>("Sounds/laserFire");
+            explosionSound = Content.Load<SoundEffect>("Sounds/explosion");
 
                     
             arial = Content.Load<SpriteFont>("arial");
@@ -309,6 +316,14 @@ namespace LunarLander3D
                 -gamepadState.ThumbSticks.Right.Y);
         }
 
+        private static Vector3 handleGamePadTrust(GamePadState gamepadState)
+        {
+            return new Vector3(
+                0,
+                gamepadState.Triggers.Left / 100, 0);
+            
+        }
+
         private static Vector3 handleGamePadMovement(GamePadState gamepadState)
         {
             return new Vector3(
@@ -332,7 +347,9 @@ namespace LunarLander3D
             GreenBar.Update(gameTime);
             if ((oxigenio <= 0) || (combustivel <=0))
             {
+                //explosionSound.Play(); // tirar o comentario dessa linha após os testes
                 //currentScreen = Screens.GAMEOVER; // tirar o comentario dessa linha após os testes
+                //MediaPlayer.Stop(); // tirar o comentario dessa linha após os testes
                 Save.SaveScore(scorelist);
             }
 
@@ -344,6 +361,7 @@ namespace LunarLander3D
             models[index].Position +=
                 handleGamePadSlide(GamePad.GetState(PlayerIndex.One)) *
                     (float)gameTime.ElapsedGameTime.TotalMilliseconds * 2;
+
 
             // Determine on which axes the ship should be rotated on, if any
             if (keyState.IsKeyDown(Keys.S) && models[index].Rotation.X < 0.5f)
@@ -441,10 +459,28 @@ namespace LunarLander3D
                     conta2 = (int)(combustivel / 40);
                     GreenBar.tamanho = conta2;
                     combustivel -= 2.5f;
+                    // rocketSound.Play(); // substituir o som de laser pelo som de foguete
                 }
             }
 
-            
+            //// Teste com Trigger comandando o motor principal
+            //if (GamePad.GetState(PlayerIndex.One).IsConnected)
+            //{
+            //    combustivel -= 2.5f;
+            //    shuttleSpeed += (Vector3.Transform(handleGamePadTrust(GamePad.GetState(PlayerIndex.One)), rotation));
+            //}
+            //// Move no eixo Y para subir teste
+            //if (keyState.IsKeyDown(Keys.X))
+            //{
+            //    if (shuttleSpeed.Y < 2f)
+            //    {
+            //        shuttleSpeed += (Vector3.Transform(new Vector3(0, 0.0001f, 0), rotation) *
+            //            (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4);
+            //        conta2 = (int)(combustivel / 40);
+            //        GreenBar.tamanho = conta2;
+            //        combustivel -= 2.5f;
+            //    }
+            //}
 
             // Move in the direction dictated by our rotation matrix
             //models[index].Position += Vector3.Transform(Vector3.Forward, rotation)
@@ -512,6 +548,10 @@ namespace LunarLander3D
                          
                     {
                         player.Stop();
+                        if (titleScreenTimer >= titleScreenDelayTime)
+                        {
+                            PlayMusic(gameplayMusic);
+                        }
                         switch (menu.Selected)
                         {
                             case Menu.Selection.START:
@@ -587,6 +627,21 @@ namespace LunarLander3D
             previousState = Keyboard.GetState();
             gamePadStateprev = GamePad.GetState(PlayerIndex.One);
             base.Update(gameTime);
+        }
+
+
+        /// <summary>
+        /// Função para executar arquivos MP3
+        /// </summary>
+        /// <param name="song"></param>
+        private void PlayMusic(Song song)
+        {
+            try
+            {
+                MediaPlayer.Play(song);
+                MediaPlayer.IsRepeating = true;
+            }
+            catch { }
         }
 
         /// <summary>
@@ -694,6 +749,12 @@ namespace LunarLander3D
                     //spriteBatch.Draw(telaMenu, Vector2.Zero, Color.White);
                     spriteBatch.Draw(videoTexture, Vector2.Zero, Color.White);
                     menu.Draw(spriteBatch, arial);
+
+                    spriteBatch.DrawString(arial,
+                        "currentScreen: " + currentScreen +
+                        "\nmenu.Selected: " + menu.Selected,
+                        Vector2.Zero,
+                        Color.Yellow);
                     break;
 
                 case Screens.GAME:
@@ -724,12 +785,11 @@ namespace LunarLander3D
                             "\nModel Rotation: " + models[index].Rotation +
                             "\nEsc = Exit" +
                             "\nOxigenio    : "   + oxigenio +
-                            "\nConta1: " + conta1 +
                             "\nCombustível : " + combustivel +
-                            "\nconta2: " + conta2,
+                            "\ncurrentScreen: " + currentScreen +
+                            "\nmenu.Selected: " + menu.Selected,
                             Vector2.Zero,
                             Color.Yellow);
-
                     break;
 
                 case Screens.INSTRUCTION:
