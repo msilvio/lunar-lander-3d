@@ -121,7 +121,6 @@
     <Compile Include="Materials\ProjectedTextureMaterial.cs" />
     <Compile Include="Materials\SpotLightMaterial.cs" />
     <Compile Include="Menu.cs" />
-    <Compile Include="Physics.cs" />
     <Compile Include="PPPointLight.cs" />
     <Compile Include="PrelightingRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

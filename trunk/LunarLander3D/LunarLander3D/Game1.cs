@@ -34,6 +34,7 @@ namespace LunarLander3D
         SoundEffect rocketSound, explosionSound;
         Texture2D videoTexture;
         Texture2D mapBorder;
+        Save saveGame = new Save();
         bool played;
 
         private float titleScreenTimer = 0.0f;
@@ -259,8 +260,8 @@ namespace LunarLander3D
 
             lastMouseState = Mouse.GetState();
 
-            scorelist = Save.LoadScore();
-            Save.SaveScore(scorelist);
+            scorelist = saveGame.LoadScore();
+            saveGame.SaveScore(scorelist);
 
         }
 
@@ -350,7 +351,7 @@ namespace LunarLander3D
                 //explosionSound.Play(); // tirar o comentario dessa linha após os testes
                 //currentScreen = Screens.GAMEOVER; // tirar o comentario dessa linha após os testes
                 //MediaPlayer.Stop(); // tirar o comentario dessa linha após os testes
-                Save.SaveScore(scorelist);
+                saveGame.SaveScore(scorelist);
             }
 
             // movimentos de rotação eixos X e Y pelo GamePad
