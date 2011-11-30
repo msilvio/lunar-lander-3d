@@ -10,21 +10,40 @@ using System.Xml.Serialization;
 
 namespace LunarLander3D
 {
-    static class Save
+    public class Save
     {
-        static StreamReader reader;
-        static StreamWriter writer;
-        static XmlSerializer serializer;
-        static FileStream fileStream;
+        StreamReader reader;
+        StreamWriter writer;
+        XmlSerializer serializer;
+        FileStream fileStream;
+        
+        
+
+        [Serializable]
+        public class ScoreData
+        {
+            public int[] scoreList = new int[10];
+        }
         
         //Transcreve a lista de Scores em um arquivo, em texto
 
-        public static void SaveScore(int[] score)
+        public void SaveScore(int[] score)
         {
             
-            serializer = new XmlSerializer(typeof(object));
+            serializer = new XmlSerializer(typeof(ScoreData));
             fileStream = File.Open("highscores.xml", FileMode.OpenOrCreate);
             writer = new StreamWriter(fileStream);
+
+            ScoreData score2 = new ScoreData();
+
+            for (int i = 0; i < 10; i++)
+            {
+                score2.scoreList[i] = score[i];
+            }
+            
+            
+
+            serializer.Serialize(fileStream, score2);
 
             //for (int i = 0; i < 10; i++)
             //{
@@ -33,14 +52,12 @@ namespace LunarLander3D
 
             writer.Flush();
 
-            serializer.Serialize(fileStream, score.ToString());
-
             writer.Close();
         }
 
         //Le o arquivo de texto e transcreve seus dados para a Lista de Scores
 
-        public static int[] LoadScore()
+        public int[] LoadScore()
         {
             if (File.Exists("highscore.xml"))
             {
@@ -68,12 +85,12 @@ namespace LunarLander3D
             }
         }
 
-        public static void SaveGame()
+        public void SaveGame()
         {
 
         }
 
-        public static void LoadGame()
+        public void LoadGame()
         {
 
         }
