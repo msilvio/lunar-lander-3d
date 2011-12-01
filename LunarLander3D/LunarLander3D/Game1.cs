@@ -33,7 +33,7 @@ namespace LunarLander3D
         Song gameplayMusic;
         SoundEffect rocketSound, explosionSound;
         Texture2D videoTexture;
-        Texture2D mapBorder;
+        Texture2D mapBorder, mapBorder2;
         Save saveGame = new Save();
         bool played;
 
@@ -154,8 +154,11 @@ namespace LunarLander3D
             RedBarImg = Content.Load<Texture2D>("Graphics/Bar");
             GreenBarImg = Content.Load<Texture2D>("Graphics/GreenBar");
 
-            RedBar = new StatusBar(RedBarImg, GraphicsDevice.Viewport, new Vector2(830, 30), (int)oxigenio);
-            GreenBar = new StatusBar(GreenBarImg, GraphicsDevice.Viewport, new Vector2(830, 160), (int)combustivel);
+            //RedBar = new StatusBar(RedBarImg, GraphicsDevice.Viewport, new Vector2(783, 80), (int)oxigenio);
+            //GreenBar = new StatusBar(GreenBarImg, GraphicsDevice.Viewport, new Vector2(783, 150), (int)combustivel);
+
+            RedBar = new StatusBar(RedBarImg, GraphicsDevice.Viewport, new Vector2(200, 110), (int)oxigenio);
+            GreenBar = new StatusBar(GreenBarImg, GraphicsDevice.Viewport, new Vector2(200, 150), (int)combustivel);
 
             // Audio
             gameplayMusic = Content.Load<Song>("Sounds/Blake-Nowhere-near");
@@ -170,6 +173,8 @@ namespace LunarLander3D
             telaMenuInst = Content.Load<Texture2D>("Graphics/logo_screen_menu");
 
             mapBorder = Content.Load<Texture2D>("Graphics/border");
+            mapBorder2 = Content.Load<Texture2D>("Graphics/border");
+            // mapBorder2 = Content.Load<Texture2D>("Graphics/border2");
 
             //models.Add(new CModel(Content.Load<Model>("ground"),
                //new Vector3(0, -2000, 0), Vector3.Zero, new Vector3(1, 1, 1), GraphicsDevice));
@@ -778,18 +783,20 @@ namespace LunarLander3D
                     /*******view port reload************/
                     GraphicsDevice.Viewport = defaultViewport;
 
+                    //spriteBatch.Draw(mapBorder, new Vector2(940, 0), Color.White);
+                    //spriteBatch.Draw(mapBorder2, new Vector2(720, 0), Color.White);
+
                     spriteBatch.Draw(mapBorder, new Vector2(940, 0), Color.White);
+                    spriteBatch.Draw(mapBorder2, new Vector2(0, 0), Color.White);
                     RedBar.Draw(spriteBatch);
                     GreenBar.Draw(spriteBatch);
                     spriteBatch.DrawString(arial,
-                            "Model Position "    + models[index].Position +
-                            "\nModel Rotation: " + models[index].Rotation +
-                            "\nEsc = Exit" +
-                            "\nOxigenio    : "   + oxigenio +
-                            "\nCombustível : " + combustivel +
-                            "\ncurrentScreen: " + currentScreen +
-                            "\nmenu.Selected: " + menu.Selected,
-                            Vector2.Zero,
+                            "Position: "   + "\n" + models[index].Position +
+                            "\nRotation: " + "\n" + models[index].Rotation +
+                            "\nOxigene:  "   + oxigenio +
+                            "\n " +
+                            "\nFuel       : " + combustivel,
+                            new Vector2(18,9),
                             Color.Yellow);
                     break;
 
@@ -819,7 +826,7 @@ namespace LunarLander3D
                         "\nMarcos Thiago - Programmer" +
                         "\nRodrigo Raiser - Programmer" +
                         "\n" +
-                        "\nEscape = Return to Menu or",
+                        "\nEscape = Return to Menu",
                         new Vector2(100, 300),
                         Color.Yellow);
 
