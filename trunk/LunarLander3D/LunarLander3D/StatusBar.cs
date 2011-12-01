@@ -40,12 +40,12 @@ namespace LunarLander3D
             KeyboardState mKeys = Keyboard.GetState();
             if (mKeys.IsKeyDown(Keys.Up) == true)
             {
-                tamanho += 1;
+                //tamanho += 1;
             }
 
             if (mKeys.IsKeyDown(Keys.Down) == true)
             {
-                tamanho -= 1;
+                //tamanho -= 1;
             }
 
             tamanho = (int)MathHelper.Clamp(tamanho, 0, 100);
