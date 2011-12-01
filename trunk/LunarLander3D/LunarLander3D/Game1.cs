@@ -81,6 +81,9 @@ namespace LunarLander3D
         Camera camera, cameraTop;
         // Parametro para alterar entre camera principal e secundaria
         bool mainCam = true;
+        // Parametro para exibir ou não displays secundários
+        bool hud = true;
+        bool hudprev = true;
 
         /// <summary>
         /// Carregamento da classe SkySphere que desenha o mapa no formato de um esfera
@@ -245,6 +248,7 @@ namespace LunarLander3D
             renderer.DoShadowMapping = true;
             renderer.ShadowMult = 0.3f;
 
+            // Definição do Viewport principal e secundário
             defaultViewport = GraphicsDevice.Viewport;
             mapViewport.Width = defaultViewport.Width / 4;
             mapViewport.Height = defaultViewport.Height / 4;
@@ -322,14 +326,6 @@ namespace LunarLander3D
                 -gamepadState.ThumbSticks.Right.Y);
         }
 
-        private static Vector3 handleGamePadTrust(GamePadState gamepadState)
-        {
-            return new Vector3(
-                0,
-                gamepadState.Triggers.Left / 100, 0);
-            
-        }
-
         private static Vector3 handleGamePadMovement(GamePadState gamepadState)
         {
             return new Vector3(
@@ -337,12 +333,24 @@ namespace LunarLander3D
                 -gamepadState.ThumbSticks.Left.X,0);
         }
 
-        // Capsula Lunar 2 posição no Array
+        private static Vector3 handleGamePadTrust(GamePadState gamepadState)
+        {
+            return new Vector3(
+                0,
+                gamepadState.Triggers.Left / 100, 0);
+
+        }
+
+        // Capsula Lunar [index] define posição no Array
         void updateModel(GameTime gameTime)
         {
             KeyboardState keyState = Keyboard.GetState();
 
             Vector3 rotChange = new Vector3(0, 0, 0);
+
+            // incluido para controlar a execução inicial
+            titleScreenTimer +=
+                (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             conta1 = (int)(oxigenio / 50);
             RedBar.tamanho = conta1;
@@ -380,19 +388,32 @@ namespace LunarLander3D
                 rotChange += new Vector3(0, -1, 0);
 
             // Posiciona a Capsula no centro do cenário posição Zero
-            if (keyState.IsKeyDown(Keys.Z) ||  
-                (GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed))
+            if (keyState.IsKeyDown(Keys.Z) ||
+                (GamePad.GetState(PlayerIndex.One).Buttons.RightShoulder == ButtonState.Pressed)) 
             {
                 rotChange = new Vector3(0, 0, 0);
                 models[index].Rotation = rotChange;
                 models[index].Position = LanderDown;
             }
 
+            // Exibe ou não as telas secundárias
+            if (titleScreenTimer >= titleScreenDelayTime)
+            {
+                if (keyState.IsKeyDown(Keys.H) ||
+                    (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed))
+                {
+                    hud = false;
+                } 
+                else
+                {
+                    hud = true;
+                }
+            }
             // Controle de troca de camera entre os viewports
             if (titleScreenTimer >= titleScreenDelayTime)
             {
                 if (keyState.IsKeyDown(Keys.T)  ||
-                (GamePad.GetState(PlayerIndex.One).Buttons.RightShoulder == ButtonState.Pressed))
+                (GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed)) 
                 {
                     mainCam = false;
                 }
@@ -468,7 +489,7 @@ namespace LunarLander3D
                     // rocketSound.Play(); // substituir o som de laser pelo som de foguete
                 }
             }
-
+           
             //// Teste com Trigger comandando o motor principal
             //if (GamePad.GetState(PlayerIndex.One).IsConnected)
             //{
@@ -765,39 +786,49 @@ namespace LunarLander3D
 
                 case Screens.GAME:
 
+                    // Teste troca de Viewports
                     if (mainCam)
                     {
                         // ViewPort Principal
                         mainViewPort();
-                        // ViewPort secundário
-                        childViewPort();
+                        // ViewPort Secundário
+                        if (hud) childViewPort();
                     }
                     else
                     {
                         // ViewPort Principal
                         mainViewPortChange();
-                        // ViewPort secundário
-                        childViewPortChange();
+                        // ViewPort Secundário
+                        if (hud) childViewPortChange();
                     }
 
                     /*******view port reload************/
                     GraphicsDevice.Viewport = defaultViewport;
 
-                    //spriteBatch.Draw(mapBorder, new Vector2(940, 0), Color.White);
-                    //spriteBatch.Draw(mapBorder2, new Vector2(720, 0), Color.White);
+                    // Testa exibir displays
+                    if (hud)
+                    {
+                        spriteBatch.Draw(mapBorder, new Vector2(940, 0), Color.White);
+                        spriteBatch.Draw(mapBorder2, new Vector2(0, 0), Color.White);
+                        RedBar.Draw(spriteBatch);
+                        GreenBar.Draw(spriteBatch);
+                        spriteBatch.DrawString(arial,
+                                "Position: " + "\n" + models[index].Position +
+                                "\nRotation: " + "\n" + models[index].Rotation +
+                                "\nOxigene:  " + oxigenio +
+                                "\n " +
+                                "\nFuel       : " + combustivel,
+                                new Vector2(18, 9),
+                                Color.Yellow);
+                    }
 
-                    spriteBatch.Draw(mapBorder, new Vector2(940, 0), Color.White);
-                    spriteBatch.Draw(mapBorder2, new Vector2(0, 0), Color.White);
-                    RedBar.Draw(spriteBatch);
-                    GreenBar.Draw(spriteBatch);
+                    // Retirar apos testes
                     spriteBatch.DrawString(arial,
-                            "Position: "   + "\n" + models[index].Position +
-                            "\nRotation: " + "\n" + models[index].Rotation +
-                            "\nOxigene:  "   + oxigenio +
-                            "\n " +
-                            "\nFuel       : " + combustivel,
-                            new Vector2(18,9),
-                            Color.Yellow);
+                        "titleScreenTimer " + titleScreenTimer +
+                        "\ntitleScreenDelayTime "  + titleScreenDelayTime,
+                        new Vector2(480, 9),
+                        Color.Yellow);
+
                     break;
 
                 case Screens.INSTRUCTION:
