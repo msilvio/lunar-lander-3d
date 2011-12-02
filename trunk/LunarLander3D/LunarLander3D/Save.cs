@@ -94,9 +94,22 @@ namespace LunarLander3D
 
         //Carrega e retorna as informações do jogo salvo
 
-        public void LoadGame()
+        public SaveGameData LoadGame()
         {
+            if (!File.Exists("SaveGameData.xml"))
+            {
+                return null;
+            }
+            else
+            {
+                fileStream = File.Open("SaveGameData.xml", FileMode.Open, FileAccess.Read, FileShare.Read);
 
+                serializer = new XmlSerializer(typeof(SaveGameData));
+
+                SaveGameData saveData = (SaveGameData)serializer.Deserialize(fileStream);
+
+                return saveData;
+            }
         }
     }
 }
