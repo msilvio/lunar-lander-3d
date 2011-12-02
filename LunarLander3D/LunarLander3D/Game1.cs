@@ -271,6 +271,7 @@ namespace LunarLander3D
 
             scorelist = saveGame.LoadScore();
             saveGame.SaveScore(scorelist);
+            saveGame.SaveGame(LanderDown, combustivel, oxigenio);
 
         }
 
