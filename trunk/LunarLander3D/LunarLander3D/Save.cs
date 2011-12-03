@@ -49,6 +49,8 @@ namespace LunarLander3D
             
             serializer.Serialize(fileStream, score2);
 
+            fileStream.Close();
+
         }
 
         //Le o arquivo de texto e transcreve seus dados para a Lista de Scores
@@ -63,6 +65,8 @@ namespace LunarLander3D
 
                 ScoreData scoreValue = (ScoreData)serializer.Deserialize(fileStream);
 
+                fileStream.Close();
+
                 return scoreValue.scoreList;
             }
             else
@@ -74,6 +78,7 @@ namespace LunarLander3D
                 }
                 return list;
             }
+            
         }
 
         //Transcreve as informações de jogo corrente em um arquivo XML
@@ -90,6 +95,7 @@ namespace LunarLander3D
             saveGame.combustivel = Combustivel;
 
             serializer.Serialize(fileStream, saveGame);
+            fileStream.Close();
         }
 
         //Carrega e retorna as informações do jogo salvo
@@ -107,6 +113,8 @@ namespace LunarLander3D
                 serializer = new XmlSerializer(typeof(SaveGameData));
 
                 SaveGameData saveData = (SaveGameData)serializer.Deserialize(fileStream);
+
+                fileStream.Close();
 
                 return saveData;
             }
