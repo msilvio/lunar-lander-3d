@@ -49,9 +49,9 @@ namespace LunarLander3D
        /// Definição de qual tela começará o jogo
        /// </summary>
         Screens currentScreen = Screens.INTRO;
-       
-        KeyboardState previousState; 
-        GamePadState gamePadStateprev;
+
+        KeyboardState keyState, oldKeyState, previousState;
+        GamePadState gamepadState, gamePadStateprev;
 
         /// <summary>
         /// SriteFont utilizado para representar a fonte do texto
@@ -343,9 +343,11 @@ namespace LunarLander3D
         }
 
         // Capsula Lunar [index] define posição no Array
-        void updateModel(GameTime gameTime)
+        void updateModel(GameTime gameTime, KeyboardState keyState, KeyboardState OldKeyState, GamePadState gamepadState, GamePadState gamePadStateprev)
         {
-            KeyboardState keyState = Keyboard.GetState();
+            //KeyboardState keyState = Keyboard.GetState();
+
+            //KeyboardState OldKeyState = keyState;
 
             Vector3 rotChange = new Vector3(0, 0, 0);
 
@@ -398,30 +400,22 @@ namespace LunarLander3D
             }
 
             // Exibe ou não as telas secundárias
-            if (titleScreenTimer >= titleScreenDelayTime)
+            if ((keyState.IsKeyDown(Keys.H) && !(OldKeyState.IsKeyDown(Keys.H))) ||
+                    (gamepadState.Buttons.A == ButtonState.Pressed) &&
+                    !(gamePadStateprev.Buttons.A == ButtonState.Pressed))
+                    
             {
-                if (keyState.IsKeyDown(Keys.H) ||
-                    (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed))
-                {
-                    hud = false;
-                } 
-                else
-                {
-                    hud = true;
-                }
+                hud = !hud;
+                //Console.WriteLine(keyState.IsKeyDown(Keys.H));
+                //Console.WriteLine(OldKeyState.IsKeyDown(Keys.H));
             }
+
             // Controle de troca de camera entre os viewports
-            if (titleScreenTimer >= titleScreenDelayTime)
+            if ((keyState.IsKeyDown(Keys.T) && !(OldKeyState.IsKeyDown(Keys.H))) ||
+                    (gamepadState.Buttons.B == ButtonState.Pressed) &&
+                    !(gamePadStateprev.Buttons.B == ButtonState.Pressed))
             {
-                if (keyState.IsKeyDown(Keys.T)  ||
-                (GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed)) 
-                {
-                    mainCam = false;
-                }
-                else
-                {
-                    mainCam = true;
-                }
+                mainCam = !mainCam;
             }
 
             // Move no eixo Z para avançar
@@ -513,6 +507,8 @@ namespace LunarLander3D
             // Move in the direction dictated by our rotation matrix
             //models[index].Position += Vector3.Transform(Vector3.Forward, rotation)
               //  * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
+
+            //OldKeyState = keyState;
         }
 
         protected override void Update(GameTime gameTime)
@@ -524,6 +520,10 @@ namespace LunarLander3D
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
+
+            keyState = Keyboard.GetState();
+
+            gamepadState = GamePad.GetState(PlayerIndex.One);
 
             switch (currentScreen)
             {
@@ -560,8 +560,8 @@ namespace LunarLander3D
 
                 case Screens.MENU:
 
-                    menu.Update(Keyboard.GetState(), previousState, 
-                                GamePad.GetState(PlayerIndex.One), gamePadStateprev);
+                    menu.Update(keyState, previousState,
+                                gamepadState, gamePadStateprev);
 
                     if (player.State == MediaState.Stopped)
                     {
@@ -606,8 +606,6 @@ namespace LunarLander3D
                     if (Keyboard.GetState().IsKeyDown(Keys.Escape)) this.Exit();
                                 MouseState mouseState = Mouse.GetState();
 
-                    KeyboardState keyState = Keyboard.GetState();
-
                     // Determine how much the camera should turn
                     float deltaX = (float)lastMouseState.X - (float)mouseState.X;
                     float deltaY = (float)lastMouseState.Y - (float)mouseState.Y;
@@ -621,9 +619,8 @@ namespace LunarLander3D
                         (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
                     // Update the camera
-                    updateModel(gameTime);
+                    updateModel(gameTime, keyState, oldKeyState, gamepadState, gamePadStateprev);
                     updateCamera(gameTime);
-                    //camera.Update();
 
                     //RedBar.Update(gameTime, Vector2.Zero);
 
@@ -652,8 +649,9 @@ namespace LunarLander3D
                     break;
             }
 
-            previousState = Keyboard.GetState();
-            gamePadStateprev = GamePad.GetState(PlayerIndex.One);
+            //previousState = Keyboard.GetState();
+            gamePadStateprev = gamepadState;
+            oldKeyState = keyState;
             base.Update(gameTime);
         }
 
