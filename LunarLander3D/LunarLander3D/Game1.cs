@@ -175,7 +175,7 @@ namespace LunarLander3D
 
             telaMenuInst = Content.Load<Texture2D>("Graphics/logo_screen_menu");
 
-            mapBorder = Content.Load<Texture2D>("Graphics/border");
+            mapBorder = Content.Load<Texture2D>("Graphics/border1");
             mapBorder2 = Content.Load<Texture2D>("Graphics/border");
             // mapBorder2 = Content.Load<Texture2D>("Graphics/border2");
 
