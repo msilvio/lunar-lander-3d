@@ -518,8 +518,8 @@ namespace LunarLander3D
             titleScreenTimer +=
                 (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
+            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+            //    this.Exit();
 
             keyState = Keyboard.GetState();
 
@@ -570,9 +570,10 @@ namespace LunarLander3D
                         videoTexture = player.GetTexture(); 
                     }
 
-                    if (((played) && (player.State == MediaState.Stopped)) || 
-                        (Keyboard.GetState().IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter)) ||
-                        (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed)))
+                    if (((played) && (player.State == MediaState.Stopped)) ||
+                        ((keyState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) ||
+                        ((gamepadState.Buttons.Start == ButtonState.Pressed) && 
+                        !(gamePadStateprev.Buttons.Start == ButtonState.Pressed))))
                          
                     {
                         player.Stop();
@@ -580,6 +581,7 @@ namespace LunarLander3D
                         {
                             PlayMusic(gameplayMusic);
                         }
+
                         switch (menu.Selected)
                         {
                             case Menu.Selection.START:
@@ -603,8 +605,13 @@ namespace LunarLander3D
                     break;
 
                 case Screens.GAME:
-                    if (Keyboard.GetState().IsKeyDown(Keys.Escape)) this.Exit();
-                                MouseState mouseState = Mouse.GetState();
+
+                    if ((keyState.IsKeyDown(Keys.Escape) && (previousState.IsKeyUp(Keys.Escape))) ||
+                        ((gamepadState.Buttons.Back == ButtonState.Pressed) &&
+                        !(gamePadStateprev.Buttons.Back == ButtonState.Pressed)))
+                        { this.Exit(); }
+
+                    MouseState mouseState = Mouse.GetState();
 
                     // Determine how much the camera should turn
                     float deltaX = (float)lastMouseState.X - (float)mouseState.X;
@@ -619,7 +626,7 @@ namespace LunarLander3D
                         (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
                     // Update the camera
-                    updateModel(gameTime, keyState, oldKeyState, gamepadState, gamePadStateprev);
+                    updateModel(gameTime, keyState, previousState, gamepadState, gamePadStateprev);
                     updateCamera(gameTime);
 
                     //RedBar.Update(gameTime, Vector2.Zero);
@@ -629,7 +636,9 @@ namespace LunarLander3D
                     break;
 
                 case Screens.INSTRUCTION:
-                    if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                    if ((keyState.IsKeyDown(Keys.Escape) && (previousState.IsKeyUp(Keys.Escape))) ||
+                        ((gamepadState.Buttons.Back == ButtonState.Pressed) && 
+                        !(gamePadStateprev.Buttons.Back == ButtonState.Pressed)))
                     {
                         currentScreen = Screens.MENU;
                         menu.Selected = Menu.Selection.NONE;
@@ -637,7 +646,9 @@ namespace LunarLander3D
                     break;
 
                 case Screens.CREDITS:
-                    if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                    if ((keyState.IsKeyDown(Keys.Escape) && (previousState.IsKeyUp(Keys.Escape))) ||
+                        ((gamepadState.Buttons.Back == ButtonState.Pressed) &&
+                        !(gamePadStateprev.Buttons.Back == ButtonState.Pressed)))
                     {
                         currentScreen = Screens.MENU;
                         menu.Selected = Menu.Selection.NONE;
@@ -645,11 +656,14 @@ namespace LunarLander3D
                     break;
 
                 case Screens.GAMEOVER:
-                    if (Keyboard.GetState().IsKeyDown(Keys.Escape)) this.Exit();
+                    if ((keyState.IsKeyDown(Keys.Escape) && (previousState.IsKeyUp(Keys.Escape))) ||
+                        ((gamepadState.Buttons.Back == ButtonState.Pressed) &&
+                        !(gamePadStateprev.Buttons.Back == ButtonState.Pressed))) 
+                        { this.Exit(); }
                     break;
             }
 
-            //previousState = Keyboard.GetState();
+            previousState = keyState;
             gamePadStateprev = gamepadState;
             oldKeyState = keyState;
             base.Update(gameTime);
