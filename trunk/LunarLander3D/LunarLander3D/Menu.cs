@@ -48,34 +48,42 @@ namespace LunarLander3D
             // Controles do menu pelo Gamepad
             //gamePadStateprev = GamePad.GetState(PlayerIndex.One);
 
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-            {
-                Selected = Selection.EXIT;
-            }
+            //if (gamePadState.Buttons.Back == ButtonState.Pressed)
+            //{
+            //    Selected = Selection.EXIT;
+            //}
 
-            if ((gamePadState.Buttons.Start == ButtonState.Pressed) && 
-                (gamePadStateprev.Buttons.Start == ButtonState.Released))
-            { 
-                Selected = Selection.START; 
-            }
+            //if ((gamePadState.Buttons.Start == ButtonState.Pressed) && 
+            //    (gamePadStateprev.Buttons.Start == ButtonState.Released))
+            //{ 
+            //    Selected = Selection.START; 
+            //}
 
             switch (arrowSelection)
             {
                 case Selection.START: 
-                    if (keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter)))
-                    { Selected = Selection.START; }
+                    if ((keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) ||
+                        ((gamePadState.Buttons.Start == ButtonState.Pressed) && 
+                        !(gamePadStateprev.Buttons.Start == ButtonState.Pressed)))
+                        { Selected = Selection.START; }
                     break;
                 case Selection.OPTIONS:
-                    if (keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) 
-                    { Selected = Selection.OPTIONS; }
+                    if ((keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) ||
+                        ((gamePadState.Buttons.Start == ButtonState.Pressed) &&
+                        !(gamePadStateprev.Buttons.Start == ButtonState.Pressed))) 
+                        { Selected = Selection.OPTIONS; }
                     break;
                 case Selection.EXIT:
-                    if (keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) 
-                    { Selected = Selection.EXIT; }
+                    if ((keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) ||
+                        ((gamePadState.Buttons.Start == ButtonState.Pressed) &&
+                        !(gamePadStateprev.Buttons.Start == ButtonState.Pressed))) 
+                        { Selected = Selection.EXIT; }
                     break;
                 case Selection.CREDITS:
-                    if (keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) 
-                    { Selected = Selection.CREDITS; }
+                    if ((keyboardState.IsKeyDown(Keys.Enter) && (previousState.IsKeyUp(Keys.Enter))) ||
+                        ((gamePadState.Buttons.Start == ButtonState.Pressed) &&
+                        !(gamePadStateprev.Buttons.Start == ButtonState.Pressed))) 
+                        { Selected = Selection.CREDITS; }
                     break;
 
             }
