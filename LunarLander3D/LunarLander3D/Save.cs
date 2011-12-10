@@ -16,12 +16,16 @@ namespace LunarLander3D
         XmlSerializer serializer;
         FileStream fileStream;
         
+        //Estrutura Serializável para os Scores
+
         [Serializable]
         public class ScoreData
         {
             public int[] scoreList = new int[10];
         }
 
+
+        //Estrutura Serializável para os dados do Jogo
 
         [Serializable]
         public class SaveGameData
