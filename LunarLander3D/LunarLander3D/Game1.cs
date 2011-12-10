@@ -415,8 +415,8 @@ namespace LunarLander3D
         /// </summary>
         void UpdateFire()
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.X))
-            {
+            
+            
                 const int fireParticlesPerFrame = 25;
 
                 // Create a number of fire particles, randomly positioned around an area.
@@ -427,7 +427,7 @@ namespace LunarLander3D
 
                 // Create one smoke particle per frmae, too.
                 smokeParticle.AddParticle(randomizeParticle(), Vector3.Zero);
-            }
+            
         }
 
         Vector3 randomizeParticle()
@@ -463,7 +463,11 @@ namespace LunarLander3D
         }
 
         // Capsula Lunar [index] define posição no Array
-        void updateModel(GameTime gameTime, KeyboardState keyState, KeyboardState OldKeyState, GamePadState gamepadState, GamePadState gamePadStateprev)
+        void updateModel(GameTime gameTime, 
+                        KeyboardState keyState, 
+                        KeyboardState OldKeyState, 
+                        GamePadState gamepadState, 
+                        GamePadState gamePadStateprev)
         {
             //KeyboardState keyState = Keyboard.GetState();
 
@@ -594,6 +598,7 @@ namespace LunarLander3D
             if (keyState.IsKeyDown(Keys.X) ||
                 (GamePad.GetState(PlayerIndex.One).Buttons.LeftShoulder == ButtonState.Pressed))
             {
+                UpdateFire();
                 if (shuttleSpeed.Y < 2f)
                 {
                     shuttleSpeed += (Vector3.Transform(new Vector3(0, 0.0001f, 0), rotation) * 
@@ -601,32 +606,11 @@ namespace LunarLander3D
                     conta2 = (int)(combustivel / 40);
                     GreenBar.tamanho = conta2;
                     combustivel -= 2.5f;
+                    
                     // rocketSound.Play(); // substituir o som de laser pelo som de foguete
                 }
             }
            
-            //// Teste com Trigger comandando o motor principal
-            //if (GamePad.GetState(PlayerIndex.One).IsConnected)
-            //{
-            //    combustivel -= 2.5f;
-            //    shuttleSpeed += (Vector3.Transform(handleGamePadTrust(GamePad.GetState(PlayerIndex.One)), rotation));
-            //}
-            //// Move no eixo Y para subir teste
-            //if (keyState.IsKeyDown(Keys.X))
-            //{
-            //    if (shuttleSpeed.Y < 2f)
-            //    {
-            //        shuttleSpeed += (Vector3.Transform(new Vector3(0, 0.0001f, 0), rotation) *
-            //            (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4);
-            //        conta2 = (int)(combustivel / 40);
-            //        GreenBar.tamanho = conta2;
-            //        combustivel -= 2.5f;
-            //    }
-            //}
-
-            // Move in the direction dictated by our rotation matrix
-            //models[index].Position += Vector3.Transform(Vector3.Forward, rotation)
-              //  * (float)gameTime.ElapsedGameTime.TotalMilliseconds * 4;
 
             //OldKeyState = keyState;
         }
@@ -750,7 +734,7 @@ namespace LunarLander3D
                     updateCamera(gameTime);
                     
                     //Update Particles
-                    UpdateParticles(gameTime);
+                    //UpdateParticles(gameTime);
 
                     //RedBar.Update(gameTime, Vector2.Zero);
 
@@ -786,11 +770,11 @@ namespace LunarLander3D
                     break;
             }
 
-<<<<<<< .mine
+
             previousState = Keyboard.GetState();
-=======
+
             previousState = keyState;
->>>>>>> .r51
+
             gamePadStateprev = gamepadState;
             oldKeyState = keyState;
             base.Update(gameTime);
