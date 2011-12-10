@@ -36,9 +36,24 @@ namespace LunarLander3D
         Texture2D mapBorder, mapBorder2;
         Save saveGame = new Save();
         bool played;
+        bool shipGrounded;
 
         private float titleScreenTimer = 0.0f;
         private float titleScreenDelayTime = 1.0f;
+
+        //Particulas
+
+        ParticleSystem explosionParticle;
+        ParticleSystem explosionSmokeParticle;
+        ParticleSystem smokeParticle;
+        ParticleSystem fireParticle;
+        ParticleSystem projectileParticle;
+
+        List<Projectile> projectiles;
+        TimeSpan timeToNextProjectile = TimeSpan.Zero;
+
+        enum ParticleType { SMOKE, EXPLOSION, FIRE };
+        ParticleType particleType = ParticleType.FIRE;
 
         /// <summary>
         /// Enum utilizado para enumerar as telas do jogo
@@ -134,6 +149,27 @@ namespace LunarLander3D
             graphics.PreferredBackBufferHeight = 720;
             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
+
+            //Carrega Partículas
+            explosionParticle = new ExplosionParticleSystem(this, this.Content);
+            fireParticle = new FireParticleSystem(this, Content);
+            smokeParticle = new SmokePlumeParticleSystem(this, Content);
+            explosionSmokeParticle = new ExplosionSmokeParticleSystem(this, Content);
+            projectileParticle = new ProjectileTrailParticleSystem(this, Content);
+
+            //Define Prioridade dos efeitos de particulas;
+            explosionParticle.DrawOrder = 100;
+            explosionSmokeParticle.DrawOrder = 200;
+            fireParticle.DrawOrder = 300;
+            smokeParticle.DrawOrder = 400;
+            projectileParticle.DrawOrder = 500;
+
+            Components.Add(explosionParticle);
+            Components.Add(smokeParticle);
+            Components.Add(fireParticle);
+            Components.Add(projectileParticle);
+            Components.Add(explosionSmokeParticle);
+
         }
 
         /// <summary>
@@ -148,17 +184,20 @@ namespace LunarLander3D
             base.Initialize();
         }
 
+
         protected override void LoadContent()
         {
+            
+            
+            
+            //Carrega Vídeo Inicial
             video = Content.Load<Video>("Videos/Lunar3D_Show");
             video1 = Content.Load<Video>("Videos/Lunar_menu");
             player = new VideoPlayer();
 
+            //Carrega Barras de Oxigenio/Combustivel
             RedBarImg = Content.Load<Texture2D>("Graphics/Bar");
             GreenBarImg = Content.Load<Texture2D>("Graphics/GreenBar");
-
-            //RedBar = new StatusBar(RedBarImg, GraphicsDevice.Viewport, new Vector2(783, 80), (int)oxigenio);
-            //GreenBar = new StatusBar(GreenBarImg, GraphicsDevice.Viewport, new Vector2(783, 150), (int)combustivel);
 
             RedBar = new StatusBar(RedBarImg, GraphicsDevice.Viewport, new Vector2(200, 110), (int)oxigenio);
             GreenBar = new StatusBar(GreenBarImg, GraphicsDevice.Viewport, new Vector2(200, 150), (int)combustivel);
@@ -177,18 +216,14 @@ namespace LunarLander3D
 
             mapBorder = Content.Load<Texture2D>("Graphics/border1");
             mapBorder2 = Content.Load<Texture2D>("Graphics/border");
-            // mapBorder2 = Content.Load<Texture2D>("Graphics/border2");
 
             //models.Add(new CModel(Content.Load<Model>("ground"),
                //new Vector3(0, -2000, 0), Vector3.Zero, new Vector3(1, 1, 1), GraphicsDevice));
 
             // 30, 4800 - 30, 9600 - 30, 3200 - 30, 256 (terrains 4 e 5)
             terrain = new Terrain(Content.Load<Texture2D>("Graphics/terrain3"), 30, 3200,
-                Content.Load<Texture2D>("Graphics/terrain3"), 6, new Vector3(1, -1, 0), // 6
+                Content.Load<Texture2D>("Graphics/terrain"), 6, new Vector3(1, -1, 0), // 6
                 GraphicsDevice, Content);
-
-            //models.Add(new CModel(Content.Load<Model>("brick_wall"),
-            //    new Vector3(0, -2000,0), new Vector3(0, 0, 0), Vector3.One, GraphicsDevice));
 
             // Capsula Lunar 2 posição no Array - colocar o index correto - index = 2 / Agora index =1
             index = 0;
@@ -283,6 +318,7 @@ namespace LunarLander3D
         /// 
         /// </summary>
         /// <param name="gameTime"></param>
+
         void updateCamera(GameTime gameTime)
         {
             // Get the new keyboard and mouse state
@@ -319,6 +355,90 @@ namespace LunarLander3D
             // Update the mouse state
             lastMouseState = mouseState;
         }
+
+        #region UpdateParticleEffects
+        /// <summary>
+        /// Helper for updating the explosions effect.
+        /// </summary>
+        void UpdateExplosions(GameTime gameTime)
+        {
+            timeToNextProjectile -= gameTime.ElapsedGameTime;
+
+            if (timeToNextProjectile <= TimeSpan.Zero)
+            {
+                // Create a new projectile once per second. The real work of moving
+                // and creating particles is handled inside the Projectile class.
+                projectiles.Add(new Projectile(explosionParticle,
+                                               explosionSmokeParticle,
+                                               projectileParticle));
+
+                timeToNextProjectile += TimeSpan.FromSeconds(1);
+            }
+        }
+
+
+        /// <summary>
+        /// Helper for updating the list of active projectiles.
+        /// </summary>
+        void UpdateProjectiles(GameTime gameTime)
+        {
+            int i = 0;
+
+            while (i < projectiles.Count)
+            {
+                if (!projectiles[i].Update(gameTime))
+                {
+                    // Remove projectiles at the end of their life.
+                    projectiles.RemoveAt(i);
+                }
+                else
+                {
+                    // Advance to the next projectile.
+                    i++;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Helper for updating the smoke plume effect.
+        /// </summary>
+        void UpdateSmokePlume()
+        {
+            // This is trivial: we just create one new smoke particle per frame.
+            smokeParticle.AddParticle(Vector3.Zero, Vector3.Zero);
+        }
+
+
+        /// <summary>
+        /// Helper for updating the fire effect.
+        /// </summary>
+        void UpdateFire()
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.X))
+            {
+                const int fireParticlesPerFrame = 25;
+
+                // Create a number of fire particles, randomly positioned around an area.
+                for (int i = 0; i < fireParticlesPerFrame; i++)
+                {
+                    fireParticle.AddParticle(randomizeParticle(), Vector3.Zero);
+                }
+
+                // Create one smoke particle per frmae, too.
+                smokeParticle.AddParticle(randomizeParticle(), Vector3.Zero);
+            }
+        }
+
+        Vector3 randomizeParticle()
+        {
+            Random random = new Random();
+            Vector3 vec = new Vector3(models[index].Position.X, random.Next((int)models[index].Position.Y - 25, (int)models[index].Position.Y), models[index].Position.Z);
+            //vec = models[index].Rotation * vec;
+            return vec;
+        }
+
+        #endregion
 
         private static Vector3 handleGamePadSlide(GamePadState gamepadState)
         {
@@ -454,7 +574,7 @@ namespace LunarLander3D
             friction = shuttleSpeed * -0.005f;
             shuttleSpeed += friction;
 
-            if (models[index].Position.Y <= 1550)
+            if (models[index].Position.Y <= 1550 || shipGrounded)
             {
                 models[index].Position = new Vector3(models[index].Position.X, 1550, models[index].Position.Z);
                 if (keyState.IsKeyUp(Keys.X) && shuttleSpeed.Y <=0) shuttleSpeed = Vector3.Zero;            
@@ -628,6 +748,9 @@ namespace LunarLander3D
                     // Update the camera
                     updateModel(gameTime, keyState, previousState, gamepadState, gamePadStateprev);
                     updateCamera(gameTime);
+                    
+                    //Update Particles
+                    UpdateParticles(gameTime);
 
                     //RedBar.Update(gameTime, Vector2.Zero);
 
@@ -663,7 +786,11 @@ namespace LunarLander3D
                     break;
             }
 
+<<<<<<< .mine
+            previousState = Keyboard.GetState();
+=======
             previousState = keyState;
+>>>>>>> .r51
             gamePadStateprev = gamepadState;
             oldKeyState = keyState;
             base.Update(gameTime);
@@ -674,6 +801,7 @@ namespace LunarLander3D
         /// Função para executar arquivos MP3
         /// </summary>
         /// <param name="song"></param>
+
         private void PlayMusic(Song song)
         {
             try
@@ -762,11 +890,28 @@ namespace LunarLander3D
 
         protected void UpdateCollision(GameTime gameTime)
         {
+            
+        }
 
+        protected void UpdateParticles(GameTime gameTime)
+        {
+            switch (particleType)
+            {
+                case ParticleType.FIRE:
+                    UpdateFire();
+                    break;
+                case ParticleType.EXPLOSION:
+                    UpdateExplosions(gameTime);
+                    break;
+                case ParticleType.SMOKE:
+                    UpdateSmokePlume();
+                    break;
+            }
         }
 
         protected override void Draw(GameTime gameTime)
         {
+
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
@@ -798,6 +943,13 @@ namespace LunarLander3D
                     break;
 
                 case Screens.GAME:
+
+                    //Desenhar Partículas
+                    explosionParticle.SetCamera(camera.View, camera.Projection);
+                    explosionSmokeParticle.SetCamera(camera.View, camera.Projection);
+                    projectileParticle.SetCamera(camera.View, camera.Projection);
+                    smokeParticle.SetCamera(camera.View, camera.Projection);
+                    fireParticle.SetCamera(camera.View, camera.Projection);
 
                     // Teste troca de Viewports
                     if (mainCam)
