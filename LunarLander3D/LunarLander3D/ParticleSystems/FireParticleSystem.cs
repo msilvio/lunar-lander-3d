@@ -48,11 +48,11 @@ namespace LunarLander3D
             settings.MinColor = new Color(255, 255, 255, 10);
             settings.MaxColor = new Color(255, 255, 255, 40);
 
-            settings.MinStartSize = 30;
-            settings.MaxStartSize = 60;
+            settings.MinStartSize = 50; // 30
+            settings.MaxStartSize = 80; // 60
 
-            settings.MinEndSize = 80;
-            settings.MaxEndSize = 120;
+            settings.MinEndSize = 100; // 80
+            settings.MaxEndSize = 160; // 120
 
             // Use additive blending.
             settings.BlendState = BlendState.Additive;

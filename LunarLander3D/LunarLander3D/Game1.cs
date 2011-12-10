@@ -415,25 +415,28 @@ namespace LunarLander3D
         /// </summary>
         void UpdateFire()
         {
-            
-            
-                const int fireParticlesPerFrame = 25;
 
-                // Create a number of fire particles, randomly positioned around an area.
-                for (int i = 0; i < fireParticlesPerFrame; i++)
-                {
-                    fireParticle.AddParticle(randomizeParticle(), Vector3.Zero);
-                }
+            const int fireParticlesPerFrame = 25;
 
-                // Create one smoke particle per frmae, too.
-                smokeParticle.AddParticle(randomizeParticle(), Vector3.Zero);
+            // Create a number of fire particles, randomly positioned around an area.
+            for (int i = 0; i < fireParticlesPerFrame; i++)
+            {
+                fireParticle.AddParticle(randomizeParticle(), Vector3.Zero);
+            }
+
+            // Create one smoke particle per frmae, too.
+            smokeParticle.AddParticle(randomizeParticle(), Vector3.Zero);
             
         }
 
         Vector3 randomizeParticle()
         {
             Random random = new Random();
-            Vector3 vec = new Vector3(models[index].Position.X, random.Next((int)models[index].Position.Y - 25, (int)models[index].Position.Y), models[index].Position.Z);
+            Vector3 vec = new Vector3(random.Next((int)models[index].Position.X - 25,
+                                      (int)models[index].Position.X + 25), 
+                                      random.Next((int)models[index].Position.Y - 25, 
+                                      (int)models[index].Position.Y), 
+                                      models[index].Position.Z);
             //vec = models[index].Rotation * vec;
             return vec;
         }
