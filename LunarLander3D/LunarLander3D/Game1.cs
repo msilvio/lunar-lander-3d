@@ -468,7 +468,7 @@ namespace LunarLander3D
         // Capsula Lunar [index] define posição no Array
         void updateModel(GameTime gameTime, 
                         KeyboardState keyState, 
-                        KeyboardState OldKeyState, 
+                        KeyboardState previousState, 
                         GamePadState gamepadState, 
                         GamePadState gamePadStateprev)
         {
@@ -527,7 +527,7 @@ namespace LunarLander3D
             }
 
             // Exibe ou não as telas secundárias
-            if ((keyState.IsKeyDown(Keys.H) && !(OldKeyState.IsKeyDown(Keys.H))) ||
+            if ((keyState.IsKeyDown(Keys.H) && !(previousState.IsKeyDown(Keys.H))) ||
                     (gamepadState.Buttons.A == ButtonState.Pressed) &&
                     !(gamePadStateprev.Buttons.A == ButtonState.Pressed))
                     
@@ -538,7 +538,7 @@ namespace LunarLander3D
             }
 
             // Controle de troca de camera entre os viewports
-            if ((keyState.IsKeyDown(Keys.T) && !(OldKeyState.IsKeyDown(Keys.H))) ||
+            if ((keyState.IsKeyDown(Keys.T) && !(previousState.IsKeyDown(Keys.T))) ||
                     (gamepadState.Buttons.B == ButtonState.Pressed) &&
                     !(gamePadStateprev.Buttons.B == ButtonState.Pressed))
             {
@@ -718,11 +718,11 @@ namespace LunarLander3D
                         !(gamePadStateprev.Buttons.Back == ButtonState.Pressed)))
                         { this.Exit(); }
 
-                    MouseState mouseState = Mouse.GetState();
+                    //MouseState mouseState = Mouse.GetState();
 
                     // Determine how much the camera should turn
-                    float deltaX = (float)lastMouseState.X - (float)mouseState.X;
-                    float deltaY = (float)lastMouseState.Y - (float)mouseState.Y;
+                    //float deltaX = (float)lastMouseState.X - (float)mouseState.X;
+                    //float deltaY = (float)lastMouseState.Y - (float)mouseState.Y;
 
                     Vector3 translation = Vector3.Zero;
 
@@ -742,7 +742,7 @@ namespace LunarLander3D
                     //RedBar.Update(gameTime, Vector2.Zero);
 
                     // Update the mouse state
-                    lastMouseState = mouseState;
+                    //lastMouseState = mouseState;
                     break;
 
                 case Screens.INSTRUCTION:
@@ -774,12 +774,12 @@ namespace LunarLander3D
             }
 
 
-            previousState = Keyboard.GetState();
+            //previousState = Keyboard.GetState();
 
             previousState = keyState;
 
             gamePadStateprev = gamepadState;
-            oldKeyState = keyState;
+            //oldKeyState = keyState;
             base.Update(gameTime);
         }
 
