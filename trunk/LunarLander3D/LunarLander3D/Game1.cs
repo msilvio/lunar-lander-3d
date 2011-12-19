@@ -63,7 +63,7 @@ namespace LunarLander3D
         /// <summary>
        /// Definição de qual tela começará o jogo
        /// </summary>
-        Screens currentScreen = Screens.INTRO;
+        Screens currentScreen = Screens.MENU; // INTRO
 
         KeyboardState keyState, oldKeyState, previousState;
         GamePadState gamepadState, gamePadStateprev;
@@ -625,12 +625,18 @@ namespace LunarLander3D
             titleScreenTimer +=
                 (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-            //    this.Exit();
-
             keyState = Keyboard.GetState();
 
             gamepadState = GamePad.GetState(PlayerIndex.One);
+
+            // Teste de inatividade na tela de menu
+            if (titleScreenTimer >= 120.0f) 
+            {
+                cont = 0;
+                titleScreenTimer = 0.0f;
+                player.Stop();
+                currentScreen = Screens.INTRO; 
+            }
 
             switch (currentScreen)
             {
@@ -640,6 +646,7 @@ namespace LunarLander3D
                     {
                         played = true;
                         cont++;
+                        //titleScreenTimer = 0.0f;
                         player.IsLooped = false;
                         player.Play(video);
                     }
@@ -650,6 +657,7 @@ namespace LunarLander3D
                         currentScreen = Screens.MENU;
                         player.IsLooped = true;
                         player.Play(video1);
+                        titleScreenTimer = 0.0f; // teste
                     }
                     
                     if (((played) && (player.State == MediaState.Stopped)) || 
@@ -658,6 +666,7 @@ namespace LunarLander3D
                             ButtonState.Pressed))
                     {
                         player.Stop();
+                        titleScreenTimer = 0.0f;
                         currentScreen = Screens.MENU;
                         player.IsLooped = true;
                         player.Play(video1);
@@ -684,14 +693,13 @@ namespace LunarLander3D
                          
                     {
                         player.Stop();
-                        if (titleScreenTimer >= titleScreenDelayTime)
-                        {
-                            PlayMusic(gameplayMusic);
-                        }
-
                         switch (menu.Selected)
                         {
                             case Menu.Selection.START:
+                                if (titleScreenTimer >= titleScreenDelayTime)
+                                {
+                                    PlayMusic(gameplayMusic);
+                                }
                                 currentScreen = Screens.GAME;
                                 menu.Selected = Menu.Selection.NONE;
                                 break;
@@ -750,6 +758,7 @@ namespace LunarLander3D
                         ((gamepadState.Buttons.Back == ButtonState.Pressed) && 
                         !(gamePadStateprev.Buttons.Back == ButtonState.Pressed)))
                     {
+                        titleScreenTimer = 0.0f;
                         currentScreen = Screens.MENU;
                         menu.Selected = Menu.Selection.NONE;
                     }
@@ -760,6 +769,7 @@ namespace LunarLander3D
                         ((gamepadState.Buttons.Back == ButtonState.Pressed) &&
                         !(gamePadStateprev.Buttons.Back == ButtonState.Pressed)))
                     {
+                        titleScreenTimer = 0.0f;
                         currentScreen = Screens.MENU;
                         menu.Selected = Menu.Selection.NONE;
                     }
@@ -922,11 +932,18 @@ namespace LunarLander3D
                     spriteBatch.Draw(videoTexture, Vector2.Zero, Color.White);
                     menu.Draw(spriteBatch, arial);
 
+                    // Retirar apos testes
+                    spriteBatch.DrawString(arial,
+                        "titleScreenTimer " + titleScreenTimer +
+                        "\ntitleScreenDelayTime " + titleScreenDelayTime,
+                        new Vector2(480, 9),
+                        Color.Yellow);
                     spriteBatch.DrawString(arial,
                         "currentScreen: " + currentScreen +
                         "\nmenu.Selected: " + menu.Selected,
                         Vector2.Zero,
                         Color.Yellow);
+                    // Retirar apos testes
                     break;
 
                 case Screens.GAME:
