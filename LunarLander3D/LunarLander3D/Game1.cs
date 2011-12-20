@@ -629,14 +629,15 @@ namespace LunarLander3D
 
             gamepadState = GamePad.GetState(PlayerIndex.One);
 
-            // Teste de inatividade na tela de menu
-            if (titleScreenTimer >= 120.0f) 
+            // Teste de inatividade na tela de MENU
+            if ((titleScreenTimer >= 120.0f) && !(currentScreen == Screens.GAME))
             {
                 cont = 0;
                 titleScreenTimer = 0.0f;
                 player.Stop();
-                currentScreen = Screens.INTRO; 
+                currentScreen = Screens.INTRO;
             }
+
 
             switch (currentScreen)
             {
@@ -1014,6 +1015,13 @@ namespace LunarLander3D
                         "\n                   Exit in Game",
                         new Vector2(100, 300),
                         Color.Yellow);
+
+                    // Retirar apos testes
+                    spriteBatch.DrawString(arial,
+                        "titleScreenTimer " + titleScreenTimer +
+                        "\ntitleScreenDelayTime " + titleScreenDelayTime,
+                        new Vector2(480, 9),
+                        Color.Yellow);
                      
                     break;
 
@@ -1028,6 +1036,13 @@ namespace LunarLander3D
                         "\n" +
                         "\nEscape = Return to Menu",
                         new Vector2(100, 300),
+                        Color.Yellow);
+
+                    // Retirar apos testes
+                    spriteBatch.DrawString(arial,
+                        "titleScreenTimer " + titleScreenTimer +
+                        "\ntitleScreenDelayTime " + titleScreenDelayTime,
+                        new Vector2(480, 9),
                         Color.Yellow);
 
                     break;
